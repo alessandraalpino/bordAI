@@ -14,8 +14,6 @@ from functions import get_colors, plot_colors, display_color_comparison
 
 
 
-
-
 # Carregar o arquivo da imagem
 uploaded = st.file_uploader("Choose a file") #, type=["png", "jpg", "jpeg"])
 
@@ -36,6 +34,6 @@ plot_colors(colors)
 
 with open('anchor_colors.json', 'r') as f:
     anchor_colors = json.load(f)
+#st.write(anchor_colors)
 
 display_color_comparison(colors, anchor_colors)  # Comparar com o dicionário anchor_colors
-#st.write(anchor_colors)
