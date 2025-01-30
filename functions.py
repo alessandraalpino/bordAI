@@ -3,8 +3,22 @@ from sklearn.cluster import KMeans
 from PIL import Image
 import streamlit as st
 from scipy.spatial import distance
+from rembg import remove
+from PIL import Image, ImageEnhance
+import matplotlib.pyplot as plt
 
 
+
+def remove_background(image):
+    output_image = remove(image)
+    return output_image
+
+
+def enhanceBrightness(image, percentage):
+    enhancer = ImageEnhance.Brightness(image)
+    factor = 1 + (percentage / 100)
+    bright_image = enhancer.enhance(factor)
+    return bright_image
 
 def get_colors(image, num_colors=5):
 
