@@ -58,9 +58,9 @@ if execute:
     colors = get_colors(image, num_colors)
     plot_colors(colors)
 
-
-    with open('anchor_colors.json', 'r') as f:
+    with open('anchor_colors_w_prob.json', 'r') as f:
         anchor_colors = json.load(f)
-    #st.write(anchor_colors)
 
-    display_color_comparison(colors, anchor_colors)  # Comparar com o dicionário anchor_colors
+    # Reestrutura o dicionário para que 'Anchor' seja a chave principal
+    structured_palette = {value["Anchor"]: value for value in anchor_colors.values()}
+    display_color_comparison(colors, structured_palette)

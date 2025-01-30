@@ -6,6 +6,8 @@ from scipy.spatial import distance
 from rembg import remove
 from PIL import Image, ImageEnhance
 import matplotlib.pyplot as plt
+import cv2
+from skimage import color
 
 
 
@@ -70,62 +72,55 @@ def plot_colors(colors):
 
 
 
-# Função para encontrar a cor Anchor mais próxima
-def closest_anchor_color(rgb_color, anchor_palette):
-    """
-    Dada uma cor em RGB, encontra a cor mais próxima na paleta da Anchor.
 
-    Args:
-    rgb_color: tupla com valores (R, G, B) da cor.
-    anchor_palette: dicionário onde as chaves são códigos da Anchor e os valores são tuplas (R, G, B).
+# Função para converter uma cor RGB para LAB
+def rgb_to_lab(rgb_color):
+    rgb_norm = np.array(rgb_color).reshape(1, 1, 3) / 255.0  # Normaliza para [0, 1]
+    lab_color = color.rgb2lab(rgb_norm)[0][0]
+    return lab_color
 
-    Retorna:
-    O código da cor mais próxima e a cor RGB correspondente.
-    """
-    closest_color = None
-    min_distance = float('inf')
+# Função para encontrar as 3 cores Anchor mais próximas no espaço LAB
+def closest_three_anchor_colors_lab(rgb_color, anchor_palette):
+    lab_color = rgb_to_lab(rgb_color)
+    distances = []
 
-    # Itera sobre as cores da paleta da Anchor
-    for anchor_code, anchor_rgb in anchor_palette.items():
-        # Calcula a distância entre a cor da imagem e a cor da paleta
-        dist = distance.euclidean(rgb_color, anchor_rgb)
+    # Calcula a distância Delta E para cada cor da paleta e armazena na lista
+    for anchor_code, color_data in anchor_palette.items():
+        anchor_rgb = color_data["RGB"]
+        anchor_lab = rgb_to_lab(anchor_rgb)
 
-        # Verifica se esta cor é a mais próxima até agora
-        if dist < min_distance:
-            min_distance = dist
-            closest_color = anchor_code
+        # Calcula a distância Delta E
+        dist = distance.euclidean(lab_color, anchor_lab)
 
-    return closest_color, anchor_palette[closest_color]
+        # Armazena o código da cor e a distância
+        distances.append((anchor_code, anchor_rgb, dist))
 
+    # Ordena as distâncias em ordem crescente e seleciona as 3 menores
+    distances.sort(key=lambda x: x[2])  # Ordena pela distância (terceiro elemento da tupla)
+    closest_colors = distances[:3]  # Pega as 3 cores mais próximas
 
-# Função para criar uma imagem de uma única cor
-def create_color_image(color, width=200, height=100):
-    """Cria uma imagem de uma única cor."""
-    img = Image.new("RGB", (width, height), tuple([int(c) for c in color]))
-    return img
+    return [(code, rgb) for code, rgb, dist in closest_colors]  # Retorna apenas o código e RGB
 
-# Função para exibir a comparação visual entre as cores no Streamlit
+# Função para exibir a comparação visual entre as cores
 def display_color_comparison(predominant_colors, anchor_colors):
+    num_colors = len(predominant_colors)
+
+    fig, axs = plt.subplots(num_colors, 4, figsize=(16, 4 * num_colors))
+
     for i, color in enumerate(predominant_colors):
-        # Encontrar a cor Anchor mais próxima (presumindo que você já tem essa função)
-        closest_code, closest_rgb = closest_anchor_color(tuple(color), anchor_colors)
+        # Encontrar as 3 cores Anchor mais próximas usando LAB
+        closest_colors = closest_three_anchor_colors_lab(tuple(color), anchor_colors)
 
-        # Criar imagem da cor predominante e da cor Anchor mais próxima
-        predominant_img = create_color_image(color)
-        anchor_img = create_color_image(closest_rgb)
+        # Exibir a cor predominante extraída da imagem
+        axs[i, 0].imshow([[color]])  # Exibe a cor
+        axs[i, 0].set_title(f"Cor Predominante {i + 1}: RGB {color}")
+        axs[i, 0].axis('off')
 
-        # Criar colunas para exibir lado a lado
-        col1, col2 = st.columns(2)
+        # Exibir as 3 cores correspondentes da Anchor
+        for j, (closest_code, closest_rgb) in enumerate(closest_colors):
+            axs[i, j + 1].imshow([[closest_rgb]])  # Exibe a cor
+            axs[i, j + 1].set_title(f"Cor Anchor {j + 1}: Código {closest_code}, RGB {closest_rgb}")
+            axs[i, j + 1].axis('off')
 
-        # Exibir a cor predominante na primeira coluna
-        with col1:
-            st.write(f"**Cor Predominante {i + 1}: RGB {color}**")
-            st.image(predominant_img, width=200)
-
-        # Exibir a cor Anchor correspondente na segunda coluna
-        with col2:
-            st.write(f"**Cor Anchor mais próxima: Código {closest_code}, RGB {closest_rgb}**")
-            st.image(anchor_img, width=200)
-
-# Exemplo de uso
-# display_color_comparison(colors, anchor_colors)  # Comparar com o dicionário anchor_colors
+    plt.tight_layout()
+    st.pyplot(fig)
