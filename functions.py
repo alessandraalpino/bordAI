@@ -79,37 +79,41 @@ def rgb_to_lab(rgb_color):
     lab_color = color.rgb2lab(rgb_norm)[0][0]
     return lab_color
 
-# Função para encontrar as 3 cores Anchor mais próximas no espaço LAB
-def closest_three_anchor_colors_lab(rgb_color, anchor_palette):
+# Função para encontrar as 3 cores Anchor mais próximas no espaço LAB, considerando a probabilidade
+def closest_three_anchor_colors_lab_with_probability(rgb_color, anchor_palette):
     lab_color = rgb_to_lab(rgb_color)
     distances = []
 
-    # Calcula a distância Delta E para cada cor da paleta e armazena na lista
+    # Calcula a métrica combinada para cada cor da paleta
     for anchor_code, color_data in anchor_palette.items():
         anchor_rgb = color_data["RGB"]
         anchor_lab = rgb_to_lab(anchor_rgb)
+        probability = color_data.get("Probability", 0.5)  # Default 0.5 se não especificado
 
         # Calcula a distância Delta E
         dist = distance.euclidean(lab_color, anchor_lab)
 
-        # Armazena o código da cor e a distância
-        distances.append((anchor_code, anchor_rgb, dist))
+        # Aplica o peso baseado na probabilidade
+        weighted_dist = dist * (1 - probability)
 
-    # Ordena as distâncias em ordem crescente e seleciona as 3 menores
-    distances.sort(key=lambda x: x[2])  # Ordena pela distância (terceiro elemento da tupla)
+        # Armazena o código da cor, RGB, e a métrica combinada
+        distances.append((anchor_code, anchor_rgb, weighted_dist))
+
+    # Ordena as distâncias ajustadas em ordem crescente e seleciona as 3 menores
+    distances.sort(key=lambda x: x[2])  # Ordena pela métrica combinada
     closest_colors = distances[:3]  # Pega as 3 cores mais próximas
 
     return [(code, rgb) for code, rgb, dist in closest_colors]  # Retorna apenas o código e RGB
 
 # Função para exibir a comparação visual entre as cores
-def display_color_comparison(predominant_colors, anchor_colors):
+def display_color_comparison_with_probability(predominant_colors, anchor_colors):
     num_colors = len(predominant_colors)
 
     fig, axs = plt.subplots(num_colors, 4, figsize=(16, 4 * num_colors))
 
     for i, color in enumerate(predominant_colors):
-        # Encontrar as 3 cores Anchor mais próximas usando LAB
-        closest_colors = closest_three_anchor_colors_lab(tuple(color), anchor_colors)
+        # Encontrar as 3 cores Anchor mais próximas usando LAB e probabilidade
+        closest_colors = closest_three_anchor_colors_lab_with_probability(tuple(color), anchor_colors)
 
         # Exibir a cor predominante extraída da imagem
         axs[i, 0].imshow([[color]])  # Exibe a cor
