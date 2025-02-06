@@ -10,7 +10,7 @@ import cv2
 import pytesseract
 import re
 import json
-from functions import remove_background, get_colors, plot_colors, display_color_comparison, enhanceBrightness
+from functions import remove_background, get_colors, plot_colors, display_color_comparison_with_probability, enhanceBrightness
 
 
 
@@ -42,6 +42,7 @@ if uploaded:
 
     else:
         # Apenas exibe a imagem original sem processamento
+        image = original_image
         st.image(original_image, caption="Imagem Original", use_column_width=True)
 
 else:
@@ -63,4 +64,4 @@ if execute:
 
     # Reestrutura o dicionário para que 'Anchor' seja a chave principal
     structured_palette = {value["Anchor"]: value for value in anchor_colors.values()}
-    display_color_comparison(colors, structured_palette)
+    display_color_comparison_with_probability(colors, structured_palette)
