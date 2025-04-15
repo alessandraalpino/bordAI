@@ -111,6 +111,7 @@ if st.session_state.waiting_for_image:
         brightness = st.slider(getTranslation("brightness", language), 0, 100, 0, step=1)
         num_colors = st.number_input(getTranslation("num_colors", language),
                                      min_value=1, max_value=15, value=5)
+        thread_brand = st.selectbox(getTranslation("thread_brand", language), ["Anchor", "DMC"], index= 0)
 
         # Adjust image
         processed_image = original_image
@@ -136,8 +137,8 @@ if st.session_state.waiting_for_image:
             # Load reference thread colors
             with open('anchor_colors_w_prob.json', 'r') as f:
                 anchor_colors = json.load(f)
-            structured_palette = {v["Anchor"]: v for v in anchor_colors.values()}
-            display_color_comparison_with_probability(colors, structured_palette)
+            structured_palette = {v[thread_brand]: v for v in anchor_colors.values()}
+            display_color_comparison_with_probability(colors, structured_palette, thread_brand)
 
             # Reset state
             st.session_state.waiting_for_image = False

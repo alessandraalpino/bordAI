@@ -47,6 +47,10 @@
     "en": "How many dominant colors do you want to extract?",
     "pt": "Quantas cores dominantes você quer extrair?"
   },
+  "thread_brand": {
+    "en": "Choose the thread brand",
+    "pt": "Escolha a marca das linhas"
+  },
   "before_image_caption": {
     "en": "Before",
     "pt": "Antes"
