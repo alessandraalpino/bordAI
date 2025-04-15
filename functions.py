@@ -10,6 +10,17 @@ import cv2
 from skimage import color
 
 
+# def classify_prompt(prompt):
+#     instrucao = (
+#         "Você é um assistente que classifica pedidos.\n"
+#         "Se o pedido do usuário envolve identificar cores de uma imagem ou gerar uma paleta de linhas Anchor com base em uma imagem, responda apenas com 'imagem'.\n"
+#         "Caso contrário, responda apenas com 'texto'.\n"
+#         f"Prompt: {prompt}\n"
+#         "Classificação:"
+#     )
+#     resposta = model.generate_content(instrucao)
+#     return resposta.text.strip().lower()
+
 
 def remove_background(image):
     output_image = remove(image)
