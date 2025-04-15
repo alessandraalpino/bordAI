@@ -16,8 +16,10 @@ from functions import (
     get_colors,
     plot_colors,
     display_color_comparison_with_probability,
-    enhanceBrightness
+    enhanceBrightness,
+    getTranslation
 )
+
 
 # Load environment variables
 load_dotenv()
@@ -41,12 +43,19 @@ if "ai_response" not in st.session_state:
 
 # App title
 st.title("BordAI 🎨🧵")
+# Language selector
+language = st.selectbox("Choose language / Escolha o idioma", ["en", "pt"])
+
+# Display initial message if chat history is empty
+if not st.session_state.chat_history:
+    st.session_state.chat_history.append(("assistant", getTranslation("initial_message", language)))
+
 # Display full chat history
 for role, message in st.session_state.chat_history:
     st.chat_message(role).write(message)
 
 # User input
-user_message = st.chat_input("Talk to the embroidery assistant...")
+user_message = st.chat_input(getTranslation("chat_input_placeholder", language))
 
 if user_message:
     # Display user message
@@ -61,8 +70,8 @@ if user_message:
         You are an embroidery assistant. Your task is to classify the user's sentence.
 
         Reply ONLY with:
-        - "1" → if the user is asking for help choosing embroidery thread colors based on an image
-        - "0" → for any other type of question.
+        - "1" → if the user is asking for help choosing embroidery thread colors based on an image, drawing, reference, or visual idea — OR if they mention uploading, sending, or sharing an image for color suggestions — OR if they ask which Anchor threads to use in a specific visual context.
+        - "0" → for any other question not related to choosing colors based on a visual reference.
 
         Sentence: "{user_message}"
         """
@@ -74,7 +83,7 @@ if user_message:
 
         if classification == "1":
             st.session_state.waiting_for_image = True
-            assistant_reply = "Sure! Please upload the image you'd like to use."
+            assistant_reply = getTranslation("image_request", language)
         else:
             response = model.generate_content(user_message)
             assistant_reply = response.text
@@ -84,23 +93,23 @@ if user_message:
         st.session_state.chat_history.append(("assistant", assistant_reply))
 
     else:
-        assistant_reply = "I'm waiting for the image! 😊"
+        assistant_reply = getTranslation("waiting_for_image_reminder", language)
         st.chat_message("assistant").write(assistant_reply)
         st.session_state.chat_history.append(("assistant", assistant_reply))
 
 # Upload + image processing
 if st.session_state.waiting_for_image:
-    uploaded = st.file_uploader("Upload your image here", type=["png", "jpg", "jpeg"])
+    uploaded = st.file_uploader(getTranslation("upload_prompt", language), type=["png", "jpg", "jpeg"])
 
     if uploaded:
         original_image = Image.open(uploaded)
-        st.image(original_image, caption="Original image", use_column_width=True)
+        st.image(original_image, caption=getTranslation("original_image_caption", language), use_column_width=True)
 
         # Preprocessing options
-        st.markdown("### Do you want to adjust the image before analysis?")
-        remove_bg = st.checkbox("Remove image background")
-        brightness = st.slider("Adjust brightness (%)", 0, 100, 0, step=1)
-        num_colors = st.number_input("How many dominant colors do you want to extract?",
+        st.markdown(f'### {getTranslation("adjust_image_title", language)}')
+        remove_bg = st.checkbox(getTranslation("remove_bg", language))
+        brightness = st.slider(getTranslation("brightness", language), 0, 100, 0, step=1)
+        num_colors = st.number_input(getTranslation("num_colors", language),
                                      min_value=1, max_value=15, value=5)
 
         # Adjust image
@@ -114,13 +123,13 @@ if st.session_state.waiting_for_image:
         # Before/after comparison
         col1, col2 = st.columns(2)
         with col1:
-            st.image(original_image, caption="Before", use_column_width=True)
+            st.image(original_image, caption=getTranslation("before_image_caption", language), use_column_width=True)
         with col2:
-            st.image(processed_image, caption="After", use_column_width=True)
+            st.image(processed_image, caption=getTranslation("after_image_caption", language), use_column_width=True)
 
-        if st.button("Analyze image"):
+        if st.button(getTranslation("analyze_button", language)):
             # Color palette analysis
-            st.markdown("### Detected color palette:")
+            st.markdown(f'### {getTranslation("palette_title", language)}')
             colors = get_colors(processed_image, num_colors)
             plot_colors(colors)
 
@@ -132,6 +141,6 @@ if st.session_state.waiting_for_image:
 
             # Reset state
             st.session_state.waiting_for_image = False
-            response_msg = "Here are the colors I found based on your image! ✨"
-            st.chat_message("assistant").write(response_msg)
-            st.session_state.chat_history.append(("assistant", response_msg))
+            final_response = getTranslation("final_response", language)
+            st.chat_message("assistant").write(final_response)
+            st.session_state.chat_history.append(("assistant", final_response))

@@ -8,19 +8,14 @@ from PIL import Image, ImageEnhance
 import matplotlib.pyplot as plt
 import cv2
 from skimage import color
+import json
 
+#Load translations file
+with open("translations.json", "r", encoding="utf-8") as f:
+    translations = json.load(f)
 
-# def classify_prompt(prompt):
-#     instrucao = (
-#         "Você é um assistente que classifica pedidos.\n"
-#         "Se o pedido do usuário envolve identificar cores de uma imagem ou gerar uma paleta de linhas Anchor com base em uma imagem, responda apenas com 'imagem'.\n"
-#         "Caso contrário, responda apenas com 'texto'.\n"
-#         f"Prompt: {prompt}\n"
-#         "Classificação:"
-#     )
-#     resposta = model.generate_content(instrucao)
-#     return resposta.text.strip().lower()
-
+def getTranslation(key, lang):
+    return translations.get(key, {}).get(lang, f"[{key}]")
 
 def remove_background(image):
     output_image = remove(image)
@@ -134,7 +129,7 @@ def display_color_comparison_with_probability(predominant_colors, anchor_colors)
         # Exibir as 3 cores correspondentes da Anchor
         for j, (closest_code, closest_rgb) in enumerate(closest_colors):
             axs[i, j + 1].imshow([[closest_rgb]])  # Exibe a cor
-            axs[i, j + 1].set_title(f"Cor Anchor {j + 1}: Código {closest_code}, RGB {closest_rgb}")
+            axs[i, j + 1].set_title(f"Código Anchor {closest_code}")
             axs[i, j + 1].axis('off')
 
     plt.tight_layout()
