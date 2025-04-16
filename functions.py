@@ -8,8 +8,14 @@ from PIL import Image, ImageEnhance
 import matplotlib.pyplot as plt
 import cv2
 from skimage import color
+import json
 
+#Load translations file
+with open("translations.json", "r", encoding="utf-8") as f:
+    translations = json.load(f)
 
+def getTranslation(key, lang):
+    return translations.get(key, {}).get(lang, f"[{key}]")
 
 def remove_background(image):
     output_image = remove(image)
@@ -106,7 +112,7 @@ def closest_three_anchor_colors_lab_with_probability(rgb_color, anchor_palette):
     return [(code, rgb) for code, rgb, dist in closest_colors]  # Retorna apenas o código e RGB
 
 # Função para exibir a comparação visual entre as cores
-def display_color_comparison_with_probability(predominant_colors, anchor_colors):
+def display_color_comparison_with_probability(predominant_colors, anchor_colors, thread_brand):
     num_colors = len(predominant_colors)
 
     fig, axs = plt.subplots(num_colors, 4, figsize=(16, 4 * num_colors))
@@ -123,7 +129,7 @@ def display_color_comparison_with_probability(predominant_colors, anchor_colors)
         # Exibir as 3 cores correspondentes da Anchor
         for j, (closest_code, closest_rgb) in enumerate(closest_colors):
             axs[i, j + 1].imshow([[closest_rgb]])  # Exibe a cor
-            axs[i, j + 1].set_title(f"Cor Anchor {j + 1}: Código {closest_code}, RGB {closest_rgb}")
+            axs[i, j + 1].set_title(f"Código {thread_brand} {closest_code}")
             axs[i, j + 1].axis('off')
 
     plt.tight_layout()

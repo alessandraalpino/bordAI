@@ -4,64 +4,144 @@ import pandas as pd
 from PIL import Image
 import matplotlib.pyplot as plt
 from math import sqrt
-# from google.colab import files
-import matplotlib.pyplot as plt
 import cv2
 import pytesseract
 import re
 import json
-from functions import remove_background, get_colors, plot_colors, display_color_comparison_with_probability, enhanceBrightness
+import os
+from dotenv import load_dotenv
+import google.generativeai as genai
+from functions import (
+    remove_background,
+    get_colors,
+    plot_colors,
+    display_color_comparison_with_probability,
+    enhanceBrightness,
+    getTranslation
+)
 
 
+# Load environment variables
+load_dotenv()
 
-# Upload da imagem
-uploaded = st.file_uploader("Envie uma imagem", type=["png", "jpg", "jpeg"])
+# Get API key
+api_key = os.getenv("API_KEY")
 
-if uploaded:
-    # Carregar a imagem original
-    original_image = Image.open(uploaded)
+# Configure Generative AI
+genai.configure(api_key=api_key)
+model = genai.GenerativeModel("gemini-1.5-pro")
 
-    # Opções de processamento
-    removeBackBool = st.checkbox("Remover fundo")
-    percent_value = st.slider("Ajuste o brilho (%)", 0, 100, 0, step=1)
+# Initialize conversation state
+if "chat_history" not in st.session_state:
+    st.session_state.chat_history = []
 
-    # Verifica se há alguma modificação a ser feita
-    if removeBackBool or percent_value > 0:
-        image = original_image
-        if removeBackBool:
-            image = remove_background(image)
-        if percent_value > 0:
-            image = enhanceBrightness(image, percent_value)
+if "waiting_for_image" not in st.session_state:
+    st.session_state.waiting_for_image = False
 
-        # Mostrar imagens lado a lado
-        col1, col2 = st.columns(2)
-        with col1:
-            st.image(original_image, caption="Imagem Original", use_column_width=True)
-        with col2:
-            st.image(image, caption="Imagem Processada", use_column_width=True)
+if "ai_response" not in st.session_state:
+    st.session_state.ai_response = ""
+
+# App title
+st.title("BordAI 🎨🧵")
+# Language selector
+language = st.selectbox("Choose language / Escolha o idioma", ["en", "pt"])
+
+# Display initial message if chat history is empty
+if not st.session_state.chat_history:
+    st.session_state.chat_history.append(("assistant", getTranslation("initial_message", language)))
+
+# Display full chat history
+for role, message in st.session_state.chat_history:
+    st.chat_message(role).write(message)
+
+# User input
+user_message = st.chat_input(getTranslation("chat_input_placeholder", language))
+
+if user_message:
+    # Display user message
+    st.chat_message("user").write(user_message)
+
+    # Save to chat history
+    st.session_state.chat_history.append(("user", user_message))
+
+    # If we're not waiting for an image, classify the prompt
+    if not st.session_state.waiting_for_image:
+        classification_prompt = f"""
+        You are an embroidery assistant. Your task is to classify the user's sentence.
+
+        Reply ONLY with:
+        - "1" → if the user is asking for help choosing embroidery thread colors based on an image, drawing, reference, or visual idea — OR if they mention uploading, sending, or sharing an image for color suggestions — OR if they ask which Anchor threads to use in a specific visual context.
+        - "0" → for any other question not related to choosing colors based on a visual reference.
+
+        Sentence: "{user_message}"
+        """
+
+        classification = model.generate_content(
+            classification_prompt,
+            generation_config={"max_output_tokens": 1}
+        ).text.strip()
+
+        if classification == "1":
+            st.session_state.waiting_for_image = True
+            assistant_reply = getTranslation("image_request", language)
+        else:
+            response = model.generate_content(user_message)
+            assistant_reply = response.text
+
+        # Display assistant message and save it
+        st.chat_message("assistant").write(assistant_reply)
+        st.session_state.chat_history.append(("assistant", assistant_reply))
 
     else:
-        # Apenas exibe a imagem original sem processamento
-        image = original_image
-        st.image(original_image, caption="Imagem Original", use_column_width=True)
+        assistant_reply = getTranslation("waiting_for_image_reminder", language)
+        st.chat_message("assistant").write(assistant_reply)
+        st.session_state.chat_history.append(("assistant", assistant_reply))
 
-else:
-    st.write("Por favor, envie uma imagem para visualizar.")
+# Upload + image processing
+if st.session_state.waiting_for_image:
+    uploaded = st.file_uploader(getTranslation("upload_prompt", language), type=["png", "jpg", "jpeg"])
 
+    if uploaded:
+        original_image = Image.open(uploaded)
+        st.image(original_image, caption=getTranslation("original_image_caption", language), use_column_width=True)
 
+        # Preprocessing options
+        st.markdown(f'### {getTranslation("adjust_image_title", language)}')
+        remove_bg = st.checkbox(getTranslation("remove_bg", language))
+        brightness = st.slider(getTranslation("brightness", language), 0, 100, 0, step=1)
+        num_colors = st.number_input(getTranslation("num_colors", language),
+                                     min_value=1, max_value=15, value=5)
+        thread_brand = st.selectbox(getTranslation("thread_brand", language), ["Anchor", "DMC"], index= 0)
 
-num_colors = st.number_input("Escolha a quantidade de cores predominantes que quer identificar",
-                             value=5)
+        # Adjust image
+        processed_image = original_image
+        if remove_bg:
+            processed_image = remove_background(processed_image)
 
-execute = st.button("Rodar")
+        if brightness > 0:
+            processed_image = enhanceBrightness(processed_image, brightness)
 
-if execute:
-    colors = get_colors(image, num_colors)
-    plot_colors(colors)
+        # Before/after comparison
+        col1, col2 = st.columns(2)
+        with col1:
+            st.image(original_image, caption=getTranslation("before_image_caption", language), use_column_width=True)
+        with col2:
+            st.image(processed_image, caption=getTranslation("after_image_caption", language), use_column_width=True)
 
-    with open('anchor_colors_w_prob.json', 'r') as f:
-        anchor_colors = json.load(f)
+        if st.button(getTranslation("analyze_button", language)):
+            # Color palette analysis
+            st.markdown(f'### {getTranslation("palette_title", language)}')
+            colors = get_colors(processed_image, num_colors)
+            plot_colors(colors)
 
-    # Reestrutura o dicionário para que 'Anchor' seja a chave principal
-    structured_palette = {value["Anchor"]: value for value in anchor_colors.values()}
-    display_color_comparison_with_probability(colors, structured_palette)
+            # Load reference thread colors
+            with open('anchor_colors_w_prob.json', 'r') as f:
+                anchor_colors = json.load(f)
+            structured_palette = {v[thread_brand]: v for v in anchor_colors.values()}
+            display_color_comparison_with_probability(colors, structured_palette, thread_brand)
+
+            # Reset state
+            st.session_state.waiting_for_image = False
+            final_response = getTranslation("final_response", language)
+            st.chat_message("assistant").write(final_response)
+            st.session_state.chat_history.append(("assistant", final_response))

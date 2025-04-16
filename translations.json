@@ -1,0 +1,74 @@
+{
+  "title": {
+    "en": "BordAI 🎨🧵",
+    "pt": "BordAI 🎨🧵"
+  },
+  "language_selector": {
+    "en": "Choose language",
+    "pt": "Escolha o idioma"
+  },
+  "chat_input_placeholder": {
+    "en": "Talk to the embroidery assistant...",
+    "pt": "Fale com o assistente de bordado..."
+  },
+  "initial_message": {
+    "en": "Hello! I'm your embroidery assistant. I can help you choose Anchor thread colors based on an image you'd like to embroider, or assist you with other embroidery-related questions. Just send an image or describe your project, and I'll suggest the best color options. How can I help you today?",
+    "pt": "Oi! Sou seu assistente de bordado. Me envie uma imagem ou faça sua pergunta."
+  },
+  "image_request": {
+    "en": "Sure! Please upload the image you'd like to use.",
+    "pt": "Claro! Por favor, envie a imagem que você gostaria de usar."
+  },
+  "waiting_for_image_reminder": {
+    "en": "I'm waiting for the image! 😊",
+    "pt": "Estou esperando a imagem! 😊"
+  },
+  "upload_prompt": {
+    "en": "Upload your image here",
+    "pt": "Envie sua imagem aqui"
+  },
+  "original_image_caption": {
+    "en": "Original image",
+    "pt": "Imagem original"
+  },
+  "adjust_image_title": {
+    "en": "Do you want to adjust the image before analysis?",
+    "pt": "Deseja ajustar a imagem antes da análise?"
+  },
+  "remove_bg": {
+    "en": "Remove image background",
+    "pt": "Remover fundo da imagem"
+  },
+  "brightness": {
+    "en": "Adjust brightness (%)",
+    "pt": "Ajustar brilho (%)"
+  },
+  "num_colors": {
+    "en": "How many dominant colors do you want to extract?",
+    "pt": "Quantas cores dominantes você quer extrair?"
+  },
+  "thread_brand": {
+    "en": "Choose the thread brand",
+    "pt": "Escolha a marca das linhas"
+  },
+  "before_image_caption": {
+    "en": "Before",
+    "pt": "Antes"
+  },
+  "after_image_caption": {
+    "en": "After",
+    "pt": "Depois"
+  },
+  "analyze_button": {
+    "en": "Analyze image",
+    "pt": "Analisar imagem"
+  },
+  "palette_title": {
+    "en": "Detected color palette:",
+    "pt": "Paleta de cores detectada:"
+  },
+  "final_response": {
+    "en": "Here are the colors I found based on your image! ✨",
+    "pt": "Aqui estão as cores que encontrei com base na sua imagem! ✨"
+  }
+}
