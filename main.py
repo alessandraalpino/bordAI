@@ -29,7 +29,7 @@ api_key = os.getenv("API_KEY")
 
 # Configure Generative AI
 genai.configure(api_key=api_key)
-model = genai.GenerativeModel("gemini-1.5-pro")
+model = genai.GenerativeModel("gemini-2.0-flash")
 
 # Initialize conversation state
 if "chat_history" not in st.session_state:
@@ -45,6 +45,20 @@ if "ai_response" not in st.session_state:
 st.title("BordAI 🎨🧵")
 # Language selector
 language = st.selectbox("Choose language / Escolha o idioma", ["en", "pt"])
+
+# Side bar
+st.sidebar.title("⚡ Atalhos Rápidos")
+st.sidebar.markdown("Use esses botões para agilizar sua experiência com o bordAI:")
+# Botão de sugestão de linhas
+if st.sidebar.button("🧵 Sugerir linhas pela imagem"):
+    st.session_state.waiting_for_image = True
+    st.sidebar.success("Modo de sugestão ativado! Agora envie uma imagem no chat.")
+# Botão para resetar o chat
+if st.sidebar.button("🔄 Resetar conversa"):
+    st.session_state.chat_history = []
+    st.session_state.ai_response = ""
+    st.session_state.waiting_for_image = False
+    st.sidebar.info("Conversa reiniciada!")
 
 # Display initial message if chat history is empty
 if not st.session_state.chat_history:
@@ -85,8 +99,16 @@ if user_message:
             st.session_state.waiting_for_image = True
             assistant_reply = getTranslation("image_request", language)
         else:
-            response = model.generate_content(user_message)
-            assistant_reply = response.text
+                response_prompt = f"""
+                You are an embroidery assistant. Be clear and helpful in your responses. Whenever possible, organize the explanation in short and clear bullet points. Try to conclude your reasoning in up to 350 tokens to avoid exceeding the response limit.
+                Respond in the same language as the user's message.
+                User's question: "{user_message}"
+                """
+                response = model.generate_content(
+                    response_prompt,
+                    #generation_config={"max_output_tokens": 800}
+                )
+                assistant_reply = response.text
 
         # Display assistant message and save it
         st.chat_message("assistant").write(assistant_reply)

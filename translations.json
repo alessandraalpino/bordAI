@@ -12,8 +12,8 @@
     "pt": "Fale com o assistente de bordado..."
   },
   "initial_message": {
-    "en": "Hello! I'm your embroidery assistant. I can help you choose Anchor thread colors based on an image you'd like to embroider, or assist you with other embroidery-related questions. Just send an image or describe your project, and I'll suggest the best color options. How can I help you today?",
-    "pt": "Oi! Sou seu assistente de bordado. Me envie uma imagem ou faça sua pergunta."
+    "en": "Hi there! I'm **bordAI 🤖**, your personal embroidery assistant.\n\n**I can help you choose thread colors from the Anchor or DMC palettes based on an image — or assist you with embroidery-related questions in general.**\n\nJust send me an image, and I’ll detect the main colors and suggest the closest matching threads from those brands.\n\n📌 You can activate the color tool at any time by **sending an image here in the chat** — or by clicking the **“Suggest threads from image”** button on the left.\n\n🎯 **How can I help you today?**",
+    "pt": "Olá! Eu sou o **bordAI 🤖**, seu assistente de bordado.\n\n**Posso te ajudar a escolher cores de linha das paletas Anchor ou DMC com base em uma imagem — ou responder dúvidas sobre bordado em geral.**\n\nÉ só me enviar uma imagem que eu identifico as cores predominantes e sugiro as linhas mais próximas dessas marcas.\n\n📌 Você pode ativar a ferramenta de cores a qualquer momento **enviando uma imagem aqui no chat** — ou clicando no botão **“Sugerir linhas pela imagem”** na lateral esquerda da tela.\n\n🎯 **Como posso te ajudar hoje?**"
   },
   "image_request": {
     "en": "Sure! Please upload the image you'd like to use.",
