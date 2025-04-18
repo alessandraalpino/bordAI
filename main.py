@@ -17,7 +17,9 @@ from functions import (
     plot_colors,
     display_color_comparison_with_probability,
     enhanceBrightness,
-    getTranslation
+    getTranslation,
+    convert_colors,
+    classify_user_intent
 )
 
 
@@ -101,12 +103,16 @@ if user_message:
         - "0" → for any other question not related to choosing colors based on a visual reference.
 
         Sentence: "{user_message}"
+
+        Reply:
         """
 
         classification = model.generate_content(
             classification_prompt,
             generation_config={"max_output_tokens": 1}
         ).text.strip()
+
+        st.write(classify_user_intent(user_message, model))
 
         if classification == "1":
             st.session_state.waiting_for_image = True
