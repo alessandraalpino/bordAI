@@ -76,7 +76,7 @@ def plot_colors(colors):
                 color_image.putpixel((x, y), tuple(color.astype(int)))  # Converter as cores para int
 
     # Exibir a imagem diretamente no Streamlit
-    st.image(color_image, caption="Cores Predominantes", use_column_width=True)
+    st.image(color_image, caption="Cores Predominantes", use_container_width=True)
 
 
 

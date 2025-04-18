@@ -31,6 +31,11 @@ api_key = os.getenv("API_KEY")
 genai.configure(api_key=api_key)
 model = genai.GenerativeModel("gemini-2.0-flash")
 
+# App title
+st.title("BordAI 🎨🧵")
+# Language selector
+language = st.selectbox("Choose language / Escolha o idioma", ["en", "pt"])
+
 # Initialize conversation state
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
@@ -41,10 +46,15 @@ if "waiting_for_image" not in st.session_state:
 if "ai_response" not in st.session_state:
     st.session_state.ai_response = ""
 
-# App title
-st.title("BordAI 🎨🧵")
-# Language selector
-language = st.selectbox("Choose language / Escolha o idioma", ["en", "pt"])
+# Detect language change and reset the conversation if it changed
+if "language" not in st.session_state:
+    st.session_state.language = language
+elif st.session_state.language != language:
+    # Reset chat if the language was changed
+    st.session_state.chat_history = []
+    st.session_state.ai_response = ""
+    st.session_state.waiting_for_image = False
+    st.session_state.language = language
 
 # Side bar
 st.sidebar.title("⚡ Atalhos Rápidos")
@@ -125,7 +135,7 @@ if st.session_state.waiting_for_image:
 
     if uploaded:
         original_image = Image.open(uploaded)
-        st.image(original_image, caption=getTranslation("original_image_caption", language), use_column_width=True)
+        st.image(original_image, caption=getTranslation("original_image_caption", language), use_container_width=True)
 
         # Preprocessing options
         st.markdown(f'### {getTranslation("adjust_image_title", language)}')
@@ -146,9 +156,9 @@ if st.session_state.waiting_for_image:
         # Before/after comparison
         col1, col2 = st.columns(2)
         with col1:
-            st.image(original_image, caption=getTranslation("before_image_caption", language), use_column_width=True)
+            st.image(original_image, caption=getTranslation("before_image_caption", language), use_container_width=True)
         with col2:
-            st.image(processed_image, caption=getTranslation("after_image_caption", language), use_column_width=True)
+            st.image(processed_image, caption=getTranslation("after_image_caption", language), use_container_width=True)
 
         if st.button(getTranslation("analyze_button", language)):
             # Color palette analysis
