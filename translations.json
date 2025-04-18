@@ -7,6 +7,30 @@
     "en": "Choose language",
     "pt": "Escolha o idioma"
   },
+    "side_bar_title": {
+      "en": "⚡ Quick Shortcuts",
+      "pt": "⚡ Atalhos Rápidos"
+  },
+    "side_bar_description": {
+      "en": "Use these buttons to enhance your experience with bordAI:",
+      "pt": "Use esses botões para agilizar sua experiência com o bordAI:"
+  },
+    "activate_tool_button": {
+      "en": "🧵 Suggest threads from image",
+      "pt": "🧵 Sugerir linhas pela imagem"
+  },
+    "activate_tool_success": {
+      "en": "Suggestion mode activated! Now upload an image in the chat.",
+      "pt": "Modo de sugestão ativado! Agora envie uma imagem no chat."
+  },
+    "reset_chat_button": {
+      "en": "🔄 Reset conversation",
+      "pt": "🔄 Resetar conversa"
+  },
+    "reset_chat_success": {
+      "en": "Conversation restarted!",
+      "pt": "Conversa reiniciada!"
+  },
   "chat_input_placeholder": {
     "en": "Talk to the embroidery assistant...",
     "pt": "Fale com o assistente de bordado..."

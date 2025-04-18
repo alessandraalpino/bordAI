@@ -56,19 +56,22 @@ elif st.session_state.language != language:
     st.session_state.waiting_for_image = False
     st.session_state.language = language
 
-# Side bar
-st.sidebar.title("⚡ Atalhos Rápidos")
-st.sidebar.markdown("Use esses botões para agilizar sua experiência com o bordAI:")
-# Botão de sugestão de linhas
-if st.sidebar.button("🧵 Sugerir linhas pela imagem"):
+# Sidebar
+st.sidebar.title(getTranslation("side_bar_title", language))
+st.sidebar.markdown(getTranslation("side_bar_description", language))
+
+# Button – Suggest threads
+if st.sidebar.button(getTranslation("activate_tool_button", language)):
     st.session_state.waiting_for_image = True
-    st.sidebar.success("Modo de sugestão ativado! Agora envie uma imagem no chat.")
-# Botão para resetar o chat
-if st.sidebar.button("🔄 Resetar conversa"):
+    st.sidebar.success(getTranslation("activate_tool_success", language))
+
+# Button – Reset conversation
+if st.sidebar.button(getTranslation("reset_chat_button", language)):
     st.session_state.chat_history = []
     st.session_state.ai_response = ""
     st.session_state.waiting_for_image = False
-    st.sidebar.info("Conversa reiniciada!")
+    st.sidebar.info(getTranslation("reset_chat_success", language))
+
 
 # Display initial message if chat history is empty
 if not st.session_state.chat_history:
