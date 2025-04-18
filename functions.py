@@ -12,43 +12,6 @@ import json
 import requests
 import time
 
-
-def get_user_ip():
-    try:
-        ip = requests.get("https://api.ipify.org").text
-        return ip
-    except Exception as e:
-        return "unknown"
-
-#  Número máximo de requisições por IP em 24 horas
-CALL_LIMIT = 20
-TIME_WINDOW = 86400  # 24h em segundos
-
-def check_ip_limit(ip):
-    current_time = time.time()
-
-    if "ip_usage" not in st.session_state:
-        st.session_state.ip_usage = {}
-
-    ip_data = st.session_state.ip_usage.get(ip)
-
-    if ip_data:
-        time_passed = current_time - ip_data["first_access"]
-        if time_passed < TIME_WINDOW:
-            if ip_data["count"] >= CALL_LIMIT:
-                return False, ip_data["count"]
-            else:
-                ip_data["count"] += 1
-                return True, ip_data["count"]
-        else:
-            # Reset após 24h
-            st.session_state.ip_usage[ip] = {"count": 1, "first_access": current_time}
-            return True, 1
-    else:
-        # Primeiro acesso desse IP
-        st.session_state.ip_usage[ip] = {"count": 1, "first_access": current_time}
-        return True, 1
-
 #Load translations file
 with open("translations.json", "r", encoding="utf-8") as f:
     translations = json.load(f)
