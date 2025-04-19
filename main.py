@@ -140,6 +140,7 @@ if st.session_state.waiting_for_image:
 
         # Preprocessing options
         st.markdown(f'### {getTranslation("adjust_image_title", language)}')
+        st.markdown(getTranslation("image_tool_intro", language))
         remove_bg = st.checkbox(getTranslation("remove_bg", language))
         brightness = st.slider(getTranslation("brightness", language), 0, 100, 0, step=1)
         num_colors = st.number_input(getTranslation("num_colors", language),

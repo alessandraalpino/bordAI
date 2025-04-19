@@ -79,6 +79,10 @@
     "en": "Do you want to adjust the image before analysis?",
     "pt": "Deseja ajustar a imagem antes da análise?"
   },
+  "image_tool_intro": {
+    "en": "🖼️ Let's find the ideal thread colors for your project based on the dominant colors in your image!\n\nYou can:\n- **Remove the background** if it’s not an important part of the image\n- **Adjust the brightness** to help highlight key colors\n- **Choose how many colors** you want to extract\n- **Select** whether you want the thread suggestions to be from the **Anchor** or **DMC** brand\n\nThese options can improve the accuracy of the results. When you're ready, click the **Analyze Image** button!",
+    "pt": "🖼️ Vamos encontrar as cores ideais para o seu projeto com base nas cores predominantes da imagem!\n\nVocê pode:\n- **Remover o fundo** se ele não for uma parte importante da imagem\n- **Ajustar o brilho** para destacar as cores principais\n- **Escolher quantas cores** deseja extrair\n- **Selecionar** se quer que as sugestões de linhas sejam da marca **Anchor** ou **DMC**\n\nEssas opções ajudam a melhorar a precisão do resultado. Quando estiver pronto, clique no botão **Analisar imagem**!"
+  },
   "remove_bg": {
     "en": "Remove image background",
     "pt": "Remover fundo da imagem"
