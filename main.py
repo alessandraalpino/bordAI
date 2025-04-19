@@ -19,7 +19,8 @@ from functions import (
     enhanceBrightness,
     getTranslation,
     convert_colors,
-    classify_user_intent
+    call_with_intent_classification,
+    functions
 )
 
 
@@ -45,6 +46,9 @@ if "chat_history" not in st.session_state:
 if "waiting_for_image" not in st.session_state:
     st.session_state.waiting_for_image = False
 
+if "waiting_for_conversion" not in st.session_state:
+    st.session_state.waiting_for_conversion = False
+
 if "ai_response" not in st.session_state:
     st.session_state.ai_response = ""
 
@@ -56,6 +60,7 @@ elif st.session_state.language != language:
     st.session_state.chat_history = []
     st.session_state.ai_response = ""
     st.session_state.waiting_for_image = False
+    st.session_state.waiting_for_conversion = False
     st.session_state.language = language
 
 # Sidebar
@@ -65,13 +70,21 @@ st.sidebar.markdown(getTranslation("side_bar_description", language))
 # Button – Suggest threads
 if st.sidebar.button(getTranslation("activate_tool_button", language)):
     st.session_state.waiting_for_image = True
+    st.session_state.waiting_for_conversion = False
     st.sidebar.success(getTranslation("activate_tool_success", language))
+
+# Button – Convert colors
+if st.sidebar.button(getTranslation("activate_conversion_tool_button", language)):
+    st.session_state.waiting_for_image = False
+    st.session_state.waiting_for_conversion = True
+    st.sidebar.success(getTranslation("activate_conversion_tool_success", language))
 
 # Button – Reset conversation
 if st.sidebar.button(getTranslation("reset_chat_button", language)):
     st.session_state.chat_history = []
     st.session_state.ai_response = ""
     st.session_state.waiting_for_image = False
+    st.session_state.waiting_for_conversion = False
     st.sidebar.info(getTranslation("reset_chat_success", language))
 
 
@@ -86,55 +99,51 @@ for role, message in st.session_state.chat_history:
 # User input
 user_message = st.chat_input(getTranslation("chat_input_placeholder", language))
 
+if st.session_state.waiting_for_conversion:
+    st.session_state.chat_history.append(("assistant", "To convert informs thread numbers from which brnand to which in the same message"))
+    #ainda sem funcionar
+
 if user_message:
     # Display user message
     st.chat_message("user").write(user_message)
-
     # Save to chat history
     st.session_state.chat_history.append(("user", user_message))
 
     # If we're not waiting for an image, classify the prompt
-    if not st.session_state.waiting_for_image:
-        classification_prompt = f"""
-        You are an embroidery assistant. Your task is to classify the user's sentence.
+    if not st.session_state.waiting_for_image and not st.session_state.waiting_for_conversion:
+        result = call_with_intent_classification(user_message, model, functions)
+        intent = result.get("intent")
 
-        Reply ONLY with:
-        - "1" → if the user is asking for help choosing embroidery thread colors based on an image, drawing, reference, or visual idea — OR if they mention uploading, sending, or sharing an image for color suggestions — OR if they ask which Anchor threads to use in a specific visual context.
-        - "0" → for any other question not related to choosing colors based on a visual reference.
+        if intent == "color_conversion":
+            if result["input_brand"] and result["output_brand"] and result["input_brand"] != result["output_brand"] and result["codes"]:
+                conversion = convert_colors(result["codes"], result["input_brand"], result["output_brand"])
+                lines = [f"🎨 Conversion from **{result['input_brand']}** to **{result['output_brand']}**:"]
+                for code in result["codes"]:
+                    targets = ", ".join(conversion.get(code, ["Not found"]))
+                    lines.append(f"- {result['input_brand']} {code} → {result['output_brand']} {targets}")
+                assistant_reply = "\n".join(lines)
+            else:
+                assistant_reply = "🎨 I understood you're trying to convert thread colors, but I need both the brands and the thread numbers to continue."
 
-        Sentence: "{user_message}"
-
-        Reply:
-        """
-
-        classification = model.generate_content(
-            classification_prompt,
-            generation_config={"max_output_tokens": 1}
-        ).text.strip()
-
-        st.write(classify_user_intent(user_message, model))
-
-        if classification == "1":
+        elif intent == "image_suggestion":
             st.session_state.waiting_for_image = True
             assistant_reply = getTranslation("image_request", language)
-        else:
-                response_prompt = f"""
-                You are an embroidery assistant. Be clear and helpful in your responses. Whenever possible, organize the explanation in short and clear bullet points. Try to conclude your reasoning in up to 350 tokens to avoid exceeding the response limit.
-                Respond in the same language as the user's message.
-                User's question: "{user_message}"
-                """
-                response = model.generate_content(
-                    response_prompt,
-                    #generation_config={"max_output_tokens": 800}
-                )
-                assistant_reply = response.text
 
-        # Display assistant message and save it
+        else:
+            response_prompt = f"""
+            You are an embroidery assistant. Be clear and helpful in your responses. Whenever possible, organize the explanation in short and clear bullet points. Try to conclude your reasoning in up to 350 tokens to avoid exceeding the response limit.
+            Respond in the same language as the user's message.
+            User's question: "{user_message}"
+            """
+            response = model.generate_content(response_prompt,)
+                                            #generation_config={"max_output_tokens": 800})
+            assistant_reply = response.text
+
         st.chat_message("assistant").write(assistant_reply)
         st.session_state.chat_history.append(("assistant", assistant_reply))
 
     else:
-        assistant_reply = getTranslation("waiting_for_image_reminder", language)
+        assistant_reply = "How can I help you?"
         st.chat_message("assistant").write(assistant_reply)
         st.session_state.chat_history.append(("assistant", assistant_reply))
 

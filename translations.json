@@ -23,6 +23,18 @@
       "en": "Suggestion mode activated! Now upload an image in the chat.",
       "pt": "Modo de sugestão ativado! Agora envie uma imagem no chat."
   },
+  "activate_conversion_tool_button": {
+  "en": "🎨 Convert colors",
+  "pt": "🎨 Converter cores"
+  },
+  "activate_conversion_tool_success": {
+    "en": "Color conversion mode activated! Just ask which threads to convert.",
+    "pt": "Modo de conversão ativado! Agora é só perguntar quais linhas deseja converter."
+  },
+  "conversion_tool_intro": {
+    "en": "🎨 Let's do it! Please type which thread colors you'd like to convert and between which brands.",
+    "pt": "🎨 Vamos lá! Me diga quais linhas deseja converter e entre quais marcas."
+  },
     "reset_chat_button": {
       "en": "🔄 Reset conversation",
       "pt": "🔄 Resetar conversa"
