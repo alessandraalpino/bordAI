@@ -12,6 +12,13 @@ import json
 import requests
 import time
 
+# Reset chat state
+def reset_chat():
+    st.session_state.chat_history = []
+    st.session_state.ai_response = ""
+    st.session_state.waiting_for_image = False
+    st.session_state.waiting_for_conversion = False
+
 #Load translations file
 with open("translations.json", "r", encoding="utf-8") as f:
     translations = json.load(f)

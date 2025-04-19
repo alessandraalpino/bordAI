@@ -21,6 +21,7 @@ from functions import (
     classify_user_intent,
     extract_conversion_params,
     format_color_conversion_message,
+    reset_chat,
     functions
 )
 
@@ -58,10 +59,7 @@ if "language" not in st.session_state:
     st.session_state.language = language
 elif st.session_state.language != language:
     # Reset chat if the language was changed
-    st.session_state.chat_history = []
-    st.session_state.ai_response = ""
-    st.session_state.waiting_for_image = False
-    st.session_state.waiting_for_conversion = False
+    reset_chat()
     st.session_state.language = language
 
 # Sidebar
@@ -83,10 +81,7 @@ if st.sidebar.button(getTranslation("activate_conversion_tool_button", language)
 
 # Button – Reset conversation
 if st.sidebar.button(getTranslation("reset_chat_button", language)):
-    st.session_state.chat_history = []
-    st.session_state.ai_response = ""
-    st.session_state.waiting_for_image = False
-    st.session_state.waiting_for_conversion = False
+    reset_chat()
     st.sidebar.info(getTranslation("reset_chat_success", language))
 
 # Display initial message if chat history is empty
