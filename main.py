@@ -18,7 +18,6 @@ from functions import (
     display_color_comparison_with_probability,
     enhanceBrightness,
     getTranslation,
-    convert_colors,
     classify_user_intent,
     extract_conversion_params,
     format_color_conversion_message,
@@ -80,7 +79,7 @@ if st.sidebar.button(getTranslation("activate_conversion_tool_button", language)
     st.session_state.waiting_for_image = False
     st.session_state.waiting_for_conversion = True
     st.sidebar.success(getTranslation("activate_conversion_tool_success", language))
-    st.session_state.chat_history.append(("assistant", "To convert informs thread numbers from which brnand to which in the same message"))
+    st.session_state.chat_history.append(("assistant", getTranslation("conversion_tool_intro", language)))
 
 # Button – Reset conversation
 if st.sidebar.button(getTranslation("reset_chat_button", language)):

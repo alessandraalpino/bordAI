@@ -118,7 +118,7 @@ def format_color_conversion_message(input_brand, output_brand, codes, language):
         # Reset conversion mode now that we're responding
         st.session_state.waiting_for_conversion = False
         # Perform the conversion
-        conv = convert_colors(codes, input_brand, output_brand)
+        conv = convert_colors(codes, input_brand, output_brand, language)
         # Heading
         heading = getTranslation("conversion_result_heading", language).format(
             input_brand=input_brand,
@@ -140,7 +140,7 @@ def format_color_conversion_message(input_brand, output_brand, codes, language):
 with open("anchor_colors_w_prob.json", "r") as f:
     color_data = json.load(f)
 
-def convert_colors(codes, input_brand="Anchor", output_brand="DMC"):
+def convert_colors(codes, input_brand, output_brand, language):
     if isinstance(codes, str):
         codes = [codes]
 
@@ -155,7 +155,7 @@ def convert_colors(codes, input_brand="Anchor", output_brand="DMC"):
                 if output_value and output_value not in matches:
                     matches.append(output_value)
 
-        result[code] = matches if matches else ["Not found"]
+        result[code] = matches if matches else [getTranslation("not_found_text", language)]
 
     return result
 

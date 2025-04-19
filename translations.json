@@ -32,8 +32,8 @@
     "pt": "Modo de conversão ativado! Agora é só perguntar quais linhas deseja converter."
   },
   "conversion_tool_intro": {
-    "en": "🎨 Let's do it! Please type which thread colors you'd like to convert and between which brands.",
-    "pt": "🎨 Vamos lá! Me diga quais linhas deseja converter e entre quais marcas."
+    "en": "🎨 To convert thread colors, please type the **thread codes**, the brand you're converting **from**, and the brand you want to convert **to**, all in the same message.\n_Example: Convert Anchor 2 and 47 to DMC._",
+    "pt": "🎨 Para converter cores de linhas, digite os **códigos das linhas**, a marca **de origem** e a marca **para a qual deseja converter**, tudo na mesma mensagem.\n_Exemplo: Converter Anchor 2 e 47 para DMC._"
   },
   "conversion_result_heading": {
     "en": "🎨 Conversion from **{input_brand}** to **{output_brand}**:",
