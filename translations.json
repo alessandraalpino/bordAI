@@ -7,6 +7,10 @@
     "en": "Choose language",
     "pt": "Escolha o idioma"
   },
+  "input_too_long": {
+    "en": "Your message is too long. Please shorten it to 500 characters or less.",
+    "pt": "Sua mensagem está muito longa. Por favor, reduza para no máximo 500 caracteres."
+  },
     "side_bar_title": {
       "en": "⚡ Quick Shortcuts",
       "pt": "⚡ Atalhos Rápidos"

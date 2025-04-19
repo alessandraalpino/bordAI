@@ -94,6 +94,7 @@ for role, message in st.session_state.chat_history:
 
 # User input
 user_message = st.chat_input(getTranslation("chat_input_placeholder", language))
+MAX_CHARS = 500
 
 if user_message:
     # Display user message
@@ -101,34 +102,37 @@ if user_message:
     # Save to chat history
     st.session_state.chat_history.append(("user", user_message))
 
-    if st.session_state.waiting_for_image:
-        intent = "image_suggestion"
-    elif st.session_state.waiting_for_conversion:
-        intent = "color_conversion"
+    if len(user_message) > MAX_CHARS:
+        st.warning(getTranslation("input_too_long", "en"))
     else:
-        #classify intent
-        intent = classify_user_intent(user_message, model, functions)
+        if st.session_state.waiting_for_image:
+            intent = "image_suggestion"
+        elif st.session_state.waiting_for_conversion:
+            intent = "color_conversion"
+        else:
+            #classify intent
+            intent = classify_user_intent(user_message, model, functions)
 
-    if intent == "image_suggestion":
-        st.session_state.waiting_for_image = True
-        assistant_reply = getTranslation("image_request", language)
+        if intent == "image_suggestion":
+            st.session_state.waiting_for_image = True
+            assistant_reply = getTranslation("image_request", language)
 
-    elif intent == "color_conversion":
-        #extract only params
-        input_brand, output_brand, codes = extract_conversion_params(user_message, model, functions)
-        assistant_reply = format_color_conversion_message(input_brand, output_brand, codes, language)
+        elif intent == "color_conversion":
+            #extract only params
+            input_brand, output_brand, codes = extract_conversion_params(user_message, model, functions)
+            assistant_reply = format_color_conversion_message(input_brand, output_brand, codes, language)
 
-    else:
-        response_prompt = f"""
-        You are an embroidery assistant. Be clear and helpful in your responses. Whenever possible, organize the explanation in short and clear bullet points. Try to conclude your reasoning in up to 350 tokens.
-        Respond in the same language as the user's message.
-        User's question: "{user_message}"
-        """
-        response = model.generate_content(response_prompt,
-                                        generation_config={"max_output_tokens": 2000})
-        assistant_reply = response.text
-    st.chat_message("assistant").write(assistant_reply)
-    st.session_state.chat_history.append(("assistant", assistant_reply))
+        else:
+            response_prompt = f"""
+            You are an embroidery assistant. Be clear and helpful in your responses. Whenever possible, organize the explanation in short and clear bullet points. Try to conclude your reasoning in up to 350 tokens.
+            Respond in the same language as the user's message.
+            User's question: "{user_message}"
+            """
+            response = model.generate_content(response_prompt,
+                                            generation_config={"max_output_tokens": 2000})
+            assistant_reply = response.text
+        st.chat_message("assistant").write(assistant_reply)
+        st.session_state.chat_history.append(("assistant", assistant_reply))
 
 # Upload + image processing
 if st.session_state.waiting_for_image:
