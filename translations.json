@@ -35,6 +35,14 @@
     "en": "🎨 Let's do it! Please type which thread colors you'd like to convert and between which brands.",
     "pt": "🎨 Vamos lá! Me diga quais linhas deseja converter e entre quais marcas."
   },
+  "conversion_result_heading": {
+    "en": "🎨 Conversion from **{input_brand}** to **{output_brand}**:",
+    "pt": "🎨 Conversão de **{input_brand}** para **{output_brand}**:"
+  },
+  "not_found_text": {
+    "en": "Not found",
+    "pt": "Não encontrado"
+  },
     "reset_chat_button": {
       "en": "🔄 Reset conversation",
       "pt": "🔄 Resetar conversa"

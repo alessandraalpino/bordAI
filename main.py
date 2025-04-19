@@ -19,7 +19,9 @@ from functions import (
     enhanceBrightness,
     getTranslation,
     convert_colors,
-    call_with_intent_classification,
+    classify_user_intent,
+    extract_conversion_params,
+    format_color_conversion_message,
     functions
 )
 
@@ -78,6 +80,8 @@ if st.sidebar.button(getTranslation("activate_conversion_tool_button", language)
     st.session_state.waiting_for_image = False
     st.session_state.waiting_for_conversion = True
     st.sidebar.success(getTranslation("activate_conversion_tool_success", language))
+    st.session_state.chat_history.append(("assistant", "To convert informs thread numbers from which brnand to which in the same message"))
+
 
 # Button – Reset conversation
 if st.sidebar.button(getTranslation("reset_chat_button", language)):
@@ -86,7 +90,6 @@ if st.sidebar.button(getTranslation("reset_chat_button", language)):
     st.session_state.waiting_for_image = False
     st.session_state.waiting_for_conversion = False
     st.sidebar.info(getTranslation("reset_chat_success", language))
-
 
 # Display initial message if chat history is empty
 if not st.session_state.chat_history:
@@ -99,53 +102,47 @@ for role, message in st.session_state.chat_history:
 # User input
 user_message = st.chat_input(getTranslation("chat_input_placeholder", language))
 
-if st.session_state.waiting_for_conversion:
-    st.session_state.chat_history.append(("assistant", "To convert informs thread numbers from which brnand to which in the same message"))
-    #ainda sem funcionar
-
 if user_message:
     # Display user message
     st.chat_message("user").write(user_message)
     # Save to chat history
     st.session_state.chat_history.append(("user", user_message))
 
-    # If we're not waiting for an image, classify the prompt
-    if not st.session_state.waiting_for_image and not st.session_state.waiting_for_conversion:
-        result = call_with_intent_classification(user_message, model, functions)
-        intent = result.get("intent")
+    #classify intent
+    intent = classify_user_intent(user_message, model, functions)
+    st.write(intent) #apagar depois
 
-        if intent == "color_conversion":
-            if result["input_brand"] and result["output_brand"] and result["input_brand"] != result["output_brand"] and result["codes"]:
-                conversion = convert_colors(result["codes"], result["input_brand"], result["output_brand"])
-                lines = [f"🎨 Conversion from **{result['input_brand']}** to **{result['output_brand']}**:"]
-                for code in result["codes"]:
-                    targets = ", ".join(conversion.get(code, ["Not found"]))
-                    lines.append(f"- {result['input_brand']} {code} → {result['output_brand']} {targets}")
-                assistant_reply = "\n".join(lines)
-            else:
-                assistant_reply = "🎨 I understood you're trying to convert thread colors, but I need both the brands and the thread numbers to continue."
+    if intent == "image_suggestion":
+        st.session_state.waiting_for_image = True
+        assistant_reply = getTranslation("image_request", language)
 
-        elif intent == "image_suggestion":
-            st.session_state.waiting_for_image = True
-            assistant_reply = getTranslation("image_request", language)
-
-        else:
-            response_prompt = f"""
-            You are an embroidery assistant. Be clear and helpful in your responses. Whenever possible, organize the explanation in short and clear bullet points. Try to conclude your reasoning in up to 350 tokens to avoid exceeding the response limit.
-            Respond in the same language as the user's message.
-            User's question: "{user_message}"
-            """
-            response = model.generate_content(response_prompt,)
-                                            #generation_config={"max_output_tokens": 800})
-            assistant_reply = response.text
-
-        st.chat_message("assistant").write(assistant_reply)
-        st.session_state.chat_history.append(("assistant", assistant_reply))
+    elif intent == "color_conversion":
+        # extract only params
+        input_brand, output_brand, codes = extract_conversion_params(user_message, model, functions)
+        assistant_reply = format_color_conversion_message(input_brand, output_brand, codes, language)
 
     else:
-        assistant_reply = "How can I help you?"
-        st.chat_message("assistant").write(assistant_reply)
-        st.session_state.chat_history.append(("assistant", assistant_reply))
+        response_prompt = f"""
+        You are an embroidery assistant. Be clear and helpful in your responses. Whenever possible, organize the explanation in short and clear bullet points. Try to conclude your reasoning in up to 350 tokens to avoid exceeding the response limit.
+        Respond in the same language as the user's message.
+        User's question: "{user_message}"
+        """
+        response = model.generate_content(response_prompt,)
+                                        #generation_config={"max_output_tokens": 800})
+        assistant_reply = response.text
+
+    st.chat_message("assistant").write(assistant_reply)
+    st.session_state.chat_history.append(("assistant", assistant_reply))
+
+# if st.session_state.waiting_for_conversion:
+#     st.session_state.chat_history.append(("assistant", "To convert informs thread numbers from which brnand to which in the same message"))
+    # user_message = st.chat_input(getTranslation("chat_input_placeholder", language))
+    # if user_message:
+    #     ib, ob, codes = extract_conversion_params(user_message, model, functions)
+    #     assistant_reply = format_color_conversion_message(ib, ob, codes, language)
+    #     st.chat_message("assistant").write(assistant_reply)
+    #     st.session_state.chat_history.append(("assistant", assistant_reply))
+    #ainda sem funcionar
 
 # Upload + image processing
 if st.session_state.waiting_for_image:
