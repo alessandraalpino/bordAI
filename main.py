@@ -1,35 +1,42 @@
 import streamlit as st
-import numpy as np
-import pandas as pd
 from PIL import Image
-import matplotlib.pyplot as plt
-from math import sqrt
-import cv2
-import pytesseract
-import re
 import json
 import os
 from dotenv import load_dotenv
 import google.generativeai as genai
-from functions import (
+from color_functions import (
+    get_secret,
     remove_background,
     get_colors,
     plot_colors,
     display_color_comparison_with_probability,
     enhanceBrightness,
-    getTranslation
+    getTranslation,
+    load_color_data
+)
+from chat_functions import (
+    classify_user_intent,
+    extract_conversion_params,
+    format_color_conversion_message,
+    reset_chat,
+    functions
 )
 
 
 # Load environment variables
-load_dotenv()
+# load_dotenv()
 
 # Get API key
-api_key = os.getenv("API_KEY")
+api_key = get_secret("API_KEY")
 
 # Configure Generative AI
 genai.configure(api_key=api_key)
-model = genai.GenerativeModel("gemini-1.5-pro")
+model = genai.GenerativeModel("gemini-2.0-flash")
+
+# App title
+st.title("BordAI 🎨🧵")
+# Language selector
+language = st.selectbox("Choose language / Escolha o idioma", ["en", "pt"])
 
 # Initialize conversation state
 if "chat_history" not in st.session_state:
@@ -38,13 +45,41 @@ if "chat_history" not in st.session_state:
 if "waiting_for_image" not in st.session_state:
     st.session_state.waiting_for_image = False
 
+if "waiting_for_conversion" not in st.session_state:
+    st.session_state.waiting_for_conversion = False
+
 if "ai_response" not in st.session_state:
     st.session_state.ai_response = ""
 
-# App title
-st.title("BordAI 🎨🧵")
-# Language selector
-language = st.selectbox("Choose language / Escolha o idioma", ["en", "pt"])
+# Detect language change and reset the conversation if it changed
+if "language" not in st.session_state:
+    st.session_state.language = language
+elif st.session_state.language != language:
+    # Reset chat if the language was changed
+    reset_chat()
+    st.session_state.language = language
+
+# Sidebar
+st.sidebar.title(getTranslation("side_bar_title", language))
+st.sidebar.markdown(getTranslation("side_bar_description", language))
+
+# Button – Suggest threads
+if st.sidebar.button(getTranslation("activate_tool_button", language)):
+    st.session_state.waiting_for_image = True
+    st.session_state.waiting_for_conversion = False
+    st.sidebar.success(getTranslation("activate_tool_success", language))
+
+# Button – Convert colors
+if st.sidebar.button(getTranslation("activate_conversion_tool_button", language)):
+    st.session_state.waiting_for_image = False
+    st.session_state.waiting_for_conversion = True
+    st.sidebar.success(getTranslation("activate_conversion_tool_success", language))
+    st.session_state.chat_history.append(("assistant", getTranslation("conversion_tool_intro", language)))
+
+# Button – Reset conversation
+if st.sidebar.button(getTranslation("reset_chat_button", language)):
+    reset_chat()
+    st.sidebar.info(getTranslation("reset_chat_success", language))
 
 # Display initial message if chat history is empty
 if not st.session_state.chat_history:
@@ -56,44 +91,62 @@ for role, message in st.session_state.chat_history:
 
 # User input
 user_message = st.chat_input(getTranslation("chat_input_placeholder", language))
+MAX_CHARS = 500
 
 if user_message:
     # Display user message
     st.chat_message("user").write(user_message)
-
     # Save to chat history
     st.session_state.chat_history.append(("user", user_message))
 
-    # If we're not waiting for an image, classify the prompt
-    if not st.session_state.waiting_for_image:
-        classification_prompt = f"""
-        You are an embroidery assistant. Your task is to classify the user's sentence.
+    if len(user_message) > MAX_CHARS:
+        st.warning(getTranslation("input_too_long", language))
+    elif any(keyword in user_message.lower() for keyword in ["system"]):
+        warning_msg = getTranslation("prompt_injection_detected", st.session_state.language)
+        st.warning(warning_msg)
+        st.chat_message("assistant").write(warning_msg)
+        st.session_state.chat_history.append(("assistant", warning_msg))
+        reset_chat()
+    else:
+        if (st.session_state.waiting_for_image or st.session_state.waiting_for_conversion) and any(k in user_message.lower() for k in getTranslation("exit_keywords", language)):
+            st.session_state.waiting_for_image = False
+            st.session_state.waiting_for_conversion = False
+            intent = "chat"
+        elif st.session_state.waiting_for_image:
+            intent = "image_suggestion"
+        elif st.session_state.waiting_for_conversion:
+            intent = "color_conversion"
+        else:
+            #classify intent
+            intent = classify_user_intent(user_message, model, functions)
 
-        Reply ONLY with:
-        - "1" → if the user is asking for help choosing embroidery thread colors based on an image, drawing, reference, or visual idea — OR if they mention uploading, sending, or sharing an image for color suggestions — OR if they ask which Anchor threads to use in a specific visual context.
-        - "0" → for any other question not related to choosing colors based on a visual reference.
-
-        Sentence: "{user_message}"
-        """
-
-        classification = model.generate_content(
-            classification_prompt,
-            generation_config={"max_output_tokens": 1}
-        ).text.strip()
-
-        if classification == "1":
+        if intent == "image_suggestion":
             st.session_state.waiting_for_image = True
             assistant_reply = getTranslation("image_request", language)
+
+        elif intent == "color_conversion":
+            #extract only params
+            input_brand, output_brand, codes = extract_conversion_params(user_message, model, functions)
+            assistant_reply = format_color_conversion_message(input_brand, output_brand, codes, language)
+
         else:
-            response = model.generate_content(user_message)
+            system_prompt = f"""
+            You are an embroidery assistant. Be clear and helpful in your responses. Whenever possible, organize the explanation in short and clear bullet points.
+            Try to conclude your reasoning in up to 350 tokens.
+            Respond in the language: {language}
+            """
+            full_input = f"{system_prompt}\n\nUser message:\n\"\"\"{user_message}\"\"\""
+
+            context = [
+                *[
+                    {"role": role, "parts": [{"text": msg}]} for role, msg in st.session_state.chat_history
+                ],
+                {"role": "user", "parts": [{"text": full_input}]}
+            ]
+
+            response = model.generate_content(context,
+                                            generation_config={"max_output_tokens": 2000})
             assistant_reply = response.text
-
-        # Display assistant message and save it
-        st.chat_message("assistant").write(assistant_reply)
-        st.session_state.chat_history.append(("assistant", assistant_reply))
-
-    else:
-        assistant_reply = getTranslation("waiting_for_image_reminder", language)
         st.chat_message("assistant").write(assistant_reply)
         st.session_state.chat_history.append(("assistant", assistant_reply))
 
@@ -103,10 +156,11 @@ if st.session_state.waiting_for_image:
 
     if uploaded:
         original_image = Image.open(uploaded)
-        st.image(original_image, caption=getTranslation("original_image_caption", language), use_column_width=True)
+        st.image(original_image, caption=getTranslation("original_image_caption", language), use_container_width=True)
 
         # Preprocessing options
         st.markdown(f'### {getTranslation("adjust_image_title", language)}')
+        st.markdown(getTranslation("image_tool_intro", language))
         remove_bg = st.checkbox(getTranslation("remove_bg", language))
         brightness = st.slider(getTranslation("brightness", language), 0, 100, 0, step=1)
         num_colors = st.number_input(getTranslation("num_colors", language),
@@ -124,21 +178,21 @@ if st.session_state.waiting_for_image:
         # Before/after comparison
         col1, col2 = st.columns(2)
         with col1:
-            st.image(original_image, caption=getTranslation("before_image_caption", language), use_column_width=True)
+            st.image(original_image, caption=getTranslation("before_image_caption", language), use_container_width=True)
         with col2:
-            st.image(processed_image, caption=getTranslation("after_image_caption", language), use_column_width=True)
+            st.image(processed_image, caption=getTranslation("after_image_caption", language), use_container_width=True)
 
         if st.button(getTranslation("analyze_button", language)):
             # Color palette analysis
             st.markdown(f'### {getTranslation("palette_title", language)}')
-            colors = get_colors(processed_image, num_colors)
-            plot_colors(colors)
+            colors = get_colors(processed_image, language, num_colors)
+            plot_colors(colors, language)
 
             # Load reference thread colors
-            with open('anchor_colors_w_prob.json', 'r') as f:
-                anchor_colors = json.load(f)
-            structured_palette = {v[thread_brand]: v for v in anchor_colors.values()}
-            display_color_comparison_with_probability(colors, structured_palette, thread_brand)
+            color_data = load_color_data(get_secret("COLOR_JSON_URL"))
+
+            structured_palette = {v[thread_brand]: v for v in color_data.values()}
+            display_color_comparison_with_probability(colors, structured_palette, thread_brand, language)
 
             # Reset state
             st.session_state.waiting_for_image = False

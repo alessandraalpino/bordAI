@@ -7,13 +7,85 @@
     "en": "Choose language",
     "pt": "Escolha o idioma"
   },
+  "input_too_long": {
+    "en": "Your message is too long. Please shorten it to 500 characters or less.",
+    "pt": "Sua mensagem está muito longa. Por favor, reduza para no máximo 500 caracteres."
+  },
+  "prompt_injection_detected": {
+    "en": "Sorry, your message contains restricted words. Please rephrase your request.",
+    "pt": "Sua mensagem contém palavras restritas. Por favor, reformule o que deseja."
+  },
+  "exit_keywords": {
+    "en": ["exit", "cancel", "nevermind", "leave", "stop", "back", "go back",  "chat mode", "talk", "start over"],
+    "pt": ["sair", "cancelar", "esquece", "voltar", "parar", "quero sair", "quero conversar", "conversar", "mudar de assunto", "modo normal"]
+  },
+  "side_bar_title": {
+    "en": "⚡ Quick Shortcuts",
+    "pt": "⚡ Atalhos Rápidos"
+  },
+  "side_bar_description": {
+    "en": "Use these buttons to enhance your experience with bordAI:",
+    "pt": "Use esses botões para agilizar sua experiência com o bordAI:"
+  },
+  "activate_tool_button": {
+    "en": "🧵 Suggest threads from image",
+    "pt": "🧵 Sugerir linhas pela imagem"
+  },
+  "activate_tool_success": {
+    "en": "Suggestion mode activated! Now upload an image in the chat.",
+    "pt": "Modo de sugestão ativado! Agora envie uma imagem no chat."
+  },
+  "activate_conversion_tool_button": {
+    "en": "🎨 Convert colors",
+    "pt": "🎨 Converter cores"
+  },
+  "activate_conversion_tool_success": {
+    "en": "Color conversion mode activated! Just ask which threads to convert.",
+    "pt": "Modo de conversão ativado! Agora é só perguntar quais linhas deseja converter."
+  },
+  "conversion_tool_intro": {
+    "en": "🎨 To convert thread colors, please type the **thread codes**, the brand you're converting **from**, and the brand you want to convert **to**, all in the same message.\n_Example: Convert Anchor 2 and 47 to DMC._",
+    "pt": "🎨 Para converter cores de linhas, digite os **códigos das linhas**, a marca **de origem** e a marca **para a qual deseja converter**, tudo na mesma mensagem.\n_Exemplo: Converter Anchor 2 e 47 para DMC._"
+  },
+  "conversion_result_heading": {
+    "en": "🎨 Conversion from **{input_brand}** to **{output_brand}**:",
+    "pt": "🎨 Conversão de **{input_brand}** para **{output_brand}**:"
+  },
+  "not_found_text": {
+    "en": "Not found",
+    "pt": "Não encontrado"
+  },
+  "grayscale_image_error": {
+    "en": "The image is in grayscale. It must be an RGB or RGBA image.",
+    "pt": "A imagem está em escala de cinza. Deve ser uma imagem RGB ou RGBA."
+  },
+  "predominant_colors_caption": {
+    "en": "Predominant Colors",
+    "pt": "Cores Predominantes"
+  },
+  "predominant_color_label": {
+    "en": "Predominant Color",
+    "pt": "Cor Predominante"
+  },
+  "code_label": {
+    "en": "Code",
+    "pt": "Código"
+  },
+  "reset_chat_button": {
+    "en": "🔄 Reset conversation",
+    "pt": "🔄 Resetar conversa"
+  },
+    "reset_chat_success": {
+      "en": "Conversation restarted!",
+      "pt": "Conversa reiniciada!"
+  },
   "chat_input_placeholder": {
     "en": "Talk to the embroidery assistant...",
     "pt": "Fale com o assistente de bordado..."
   },
   "initial_message": {
-    "en": "Hello! I'm your embroidery assistant. I can help you choose Anchor thread colors based on an image you'd like to embroider, or assist you with other embroidery-related questions. Just send an image or describe your project, and I'll suggest the best color options. How can I help you today?",
-    "pt": "Oi! Sou seu assistente de bordado. Me envie uma imagem ou faça sua pergunta."
+    "en": "Hi there! I'm **bordAI 🤖**, your personal embroidery assistant.\n\n**I can help you choose thread colors from the Anchor or DMC palettes based on an image — or assist you with embroidery-related questions in general.**\n\nJust send me an image, and I’ll detect the main colors and suggest the closest matching threads from those brands.\n\n📌 You can activate the color tool at any time by **clicking the “Suggest threads from image”** button on the left — or **asking here in the chat**.\n\n🎯 **How can I help you today?**",
+    "pt": "Olá! Eu sou o **bordAI 🤖**, seu assistente de bordado.\n\n**Posso te ajudar a escolher cores de linha das paletas Anchor ou DMC com base em uma imagem — ou responder dúvidas sobre bordado em geral.**\n\nÉ só me enviar uma imagem que eu identifico as cores predominantes e sugiro as linhas mais próximas dessas marcas.\n\n📌 Você pode ativar a ferramenta de cores a qualquer momento **clicando no botão “Sugerir linhas pela imagem”** na lateral esquerda da tela — ou **pedindo aqui no chat**.\n\n🎯 **Como posso te ajudar hoje?**"
   },
   "image_request": {
     "en": "Sure! Please upload the image you'd like to use.",
@@ -34,6 +106,10 @@
   "adjust_image_title": {
     "en": "Do you want to adjust the image before analysis?",
     "pt": "Deseja ajustar a imagem antes da análise?"
+  },
+  "image_tool_intro": {
+    "en": "🖼️ Let's find the ideal thread colors for your project based on the dominant colors in your image!\n\nYou can:\n- **Remove the background** if it’s not an important part of the image\n- **Adjust the brightness** to help highlight key colors\n- **Choose how many colors** you want to extract\n- **Select** whether you want the thread suggestions to be from the **Anchor** or **DMC** brand\n\nThese options can improve the accuracy of the results. When you're ready, click the **Analyze Image** button!",
+    "pt": "🖼️ Vamos encontrar as cores ideais para o seu projeto com base nas cores predominantes da imagem!\n\nVocê pode:\n- **Remover o fundo** se ele não for uma parte importante da imagem\n- **Ajustar o brilho** para destacar as cores principais\n- **Escolher quantas cores** deseja extrair\n- **Selecionar** se quer que as sugestões de linhas sejam da marca **Anchor** ou **DMC**\n\nEssas opções ajudam a melhorar a precisão do resultado. Quando estiver pronto, clique no botão **Analisar imagem**!"
   },
   "remove_bg": {
     "en": "Remove image background",
