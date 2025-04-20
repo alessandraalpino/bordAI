@@ -101,7 +101,11 @@ if user_message:
     if len(user_message) > MAX_CHARS:
         st.warning(getTranslation("input_too_long", language))
     else:
-        if st.session_state.waiting_for_image:
+        if (st.session_state.waiting_for_image or st.session_state.waiting_for_conversion) and any(k in user_message.lower() for k in getTranslation("exit_keywords", language)):
+            st.session_state.waiting_for_image = False
+            st.session_state.waiting_for_conversion = False
+            intent = "chat"
+        elif st.session_state.waiting_for_image:
             intent = "image_suggestion"
         elif st.session_state.waiting_for_conversion:
             intent = "color_conversion"
@@ -119,13 +123,22 @@ if user_message:
             assistant_reply = format_color_conversion_message(input_brand, output_brand, codes, language)
 
         else:
-            response_prompt = f"""
-            You are an embroidery assistant. Be clear and helpful in your responses. Whenever possible, organize the explanation in short and clear bullet points. Try to conclude your reasoning in up to 350 tokens.
-            Respond in the same language: {language}
-            User's question: "{user_message}"
+            system_prompt = f"""
+            You are an embroidery assistant. Be clear and helpful in your responses. Whenever possible, organize the explanation in short and clear bullet points.
+            Try to conclude your reasoning in up to 350 tokens.
+            Respond in the language: {language}
             """
-            response = model.generate_content(response_prompt,
-                                            generation_config={"max_output_tokens": 2000})
+            full_input = f"{system_prompt}\n\nUser message:\n\"\"\"{user_message}\"\"\""
+
+            context = [
+                *[
+                    {"role": role, "parts": [{"text": msg}]} for role, msg in st.session_state.chat_history
+                ],
+                {"role": "user", "parts": [{"text": full_input}]}
+            ]
+
+            response = model.generate_content(context,)
+                                            #generation_config={"max_output_tokens": 2000})
             assistant_reply = response.text
         st.chat_message("assistant").write(assistant_reply)
         st.session_state.chat_history.append(("assistant", assistant_reply))

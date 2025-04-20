@@ -11,6 +11,10 @@
     "en": "Your message is too long. Please shorten it to 500 characters or less.",
     "pt": "Sua mensagem está muito longa. Por favor, reduza para no máximo 500 caracteres."
   },
+    "exit_keywords": {
+      "en": ["exit", "cancel", "nevermind", "leave", "stop", "back", "go back",  "chat mode", "talk", "start over"],
+      "pt": ["sair", "cancelar", "esquece", "voltar", "parar", "quero sair", "quero conversar", "conversar", "mudar de assunto", "modo normal"]
+    },
     "side_bar_title": {
       "en": "⚡ Quick Shortcuts",
       "pt": "⚡ Atalhos Rápidos"
