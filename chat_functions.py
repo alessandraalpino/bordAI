@@ -24,7 +24,10 @@ functions = [
                 "parameters": {
                     "type": "object",
                     "properties": {
-                        "intent": {"type": "string","enum": ["color_conversion", "image_suggestion", "chat"]}
+                        "intent": {
+                            "type": "string",
+                            "enum": ["color_conversion", "image_suggestion", "chat"]
+                        }
                     },
                     "required": ["intent"]
                 }
@@ -37,7 +40,10 @@ functions = [
                     "properties": {
                         "input_brand": {"type": "string"},
                         "output_brand": {"type": "string"},
-                        "codes": {"type": "array","items": {"type": "string"}}
+                        "codes": {
+                            "type": "array",
+                            "items": {"type": "string"}
+                        }
                     },
                     "required": ["input_brand", "output_brand", "codes"]
                 }
