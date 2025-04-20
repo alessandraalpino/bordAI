@@ -47,7 +47,7 @@ def enhanceBrightness(image, percentage):
     bright_image = enhancer.enhance(factor)
     return bright_image
 
-def get_colors(image, num_colors=5):
+def get_colors(image, language, num_colors=5):
 
     # Converter a imagem para um array NumPy
     image = np.array(image)
@@ -57,7 +57,7 @@ def get_colors(image, num_colors=5):
 
     # Verificar se a imagem tem 2 dimensões (escala de cinza)
     if len(image.shape) == 2:
-        raise ValueError("A imagem está em escala de cinza. Deve ser uma imagem RGB ou RGBA.")
+        raise ValueError(getTranslation("grayscale_image_error", language))
 
     # Se a imagem tem 4 canais (RGBA), remover o canal alfa (transparência)
     if image.shape[2] == 4:
@@ -74,7 +74,7 @@ def get_colors(image, num_colors=5):
     colors = np.clip(kmeans.cluster_centers_, 0, 255).astype(int)
     return colors
 
-def plot_colors(colors):
+def plot_colors(colors, language):
     # Definir as dimensões da imagem (largura proporcional ao número de cores)
     width_per_color = 100
     height = 50
@@ -90,7 +90,7 @@ def plot_colors(colors):
                 color_image.putpixel((x, y), tuple(color.astype(int)))  # Converter as cores para int
 
     # Exibir a imagem diretamente no Streamlit
-    st.image(color_image, caption="Cores Predominantes", use_container_width=True)
+    st.image(color_image, caption=getTranslation("predominant_colors_caption", language), use_container_width=True)
 
 # Função para converter uma cor RGB para LAB
 def rgb_to_lab(rgb_color):
@@ -125,7 +125,7 @@ def closest_three_anchor_colors_lab_with_probability(rgb_color, anchor_palette):
     return [(code, rgb) for code, rgb, dist in closest_colors]  # Retorna apenas o código e RGB
 
 # Função para exibir a comparação visual entre as cores
-def display_color_comparison_with_probability(predominant_colors, anchor_colors, thread_brand):
+def display_color_comparison_with_probability(predominant_colors, anchor_colors, thread_brand, language):
     num_colors = len(predominant_colors)
 
     fig, axs = plt.subplots(num_colors, 4, figsize=(16, 4 * num_colors))
@@ -136,13 +136,13 @@ def display_color_comparison_with_probability(predominant_colors, anchor_colors,
 
         # Exibir a cor predominante extraída da imagem
         axs[i, 0].imshow([[color]])  # Exibe a cor
-        axs[i, 0].set_title(f"Cor Predominante {i + 1}: RGB {color}")
+        axs[i, 0].set_title(f'{getTranslation("predominant_color_label", language)} {i + 1}: RGB {color}')
         axs[i, 0].axis('off')
 
         # Exibir as 3 cores correspondentes da Anchor
         for j, (closest_code, closest_rgb) in enumerate(closest_colors):
             axs[i, j + 1].imshow([[closest_rgb]])  # Exibe a cor
-            axs[i, j + 1].set_title(f"Código {thread_brand} {closest_code}")
+            axs[i, j + 1].set_title(f'{getTranslation("code_label", language)} {thread_brand} {closest_code}')
             axs[i, j + 1].axis('off')
 
     plt.tight_layout()

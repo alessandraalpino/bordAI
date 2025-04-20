@@ -47,9 +47,25 @@
     "en": "Not found",
     "pt": "Não encontrado"
   },
-    "reset_chat_button": {
-      "en": "🔄 Reset conversation",
-      "pt": "🔄 Resetar conversa"
+  "grayscale_image_error": {
+    "en": "The image is in grayscale. It must be an RGB or RGBA image.",
+    "pt": "A imagem está em escala de cinza. Deve ser uma imagem RGB ou RGBA."
+  },
+  "predominant_colors_caption": {
+    "en": "Predominant Colors",
+    "pt": "Cores Predominantes"
+  },
+  "predominant_color_label": {
+    "en": "Predominant Color",
+    "pt": "Cor Predominante"
+  },
+  "code_label": {
+    "en": "Code",
+    "pt": "Código"
+  },
+  "reset_chat_button": {
+    "en": "🔄 Reset conversation",
+    "pt": "🔄 Resetar conversa"
   },
     "reset_chat_success": {
       "en": "Conversation restarted!",

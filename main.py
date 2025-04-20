@@ -99,7 +99,7 @@ if user_message:
     st.session_state.chat_history.append(("user", user_message))
 
     if len(user_message) > MAX_CHARS:
-        st.warning(getTranslation("input_too_long", "en"))
+        st.warning(getTranslation("input_too_long", language))
     else:
         if st.session_state.waiting_for_image:
             intent = "image_suggestion"
@@ -121,7 +121,7 @@ if user_message:
         else:
             response_prompt = f"""
             You are an embroidery assistant. Be clear and helpful in your responses. Whenever possible, organize the explanation in short and clear bullet points. Try to conclude your reasoning in up to 350 tokens.
-            Respond in the same language as the user's message.
+            Respond in the same language: {language}
             User's question: "{user_message}"
             """
             response = model.generate_content(response_prompt,
@@ -165,14 +165,14 @@ if st.session_state.waiting_for_image:
         if st.button(getTranslation("analyze_button", language)):
             # Color palette analysis
             st.markdown(f'### {getTranslation("palette_title", language)}')
-            colors = get_colors(processed_image, num_colors)
-            plot_colors(colors)
+            colors = get_colors(processed_image, language, num_colors)
+            plot_colors(colors, language)
 
             # Load reference thread colors
             with open('anchor_colors_w_prob.json', 'r') as f:
                 anchor_colors = json.load(f)
             structured_palette = {v[thread_brand]: v for v in anchor_colors.values()}
-            display_color_comparison_with_probability(colors, structured_palette, thread_brand)
+            display_color_comparison_with_probability(colors, structured_palette, thread_brand, language)
 
             # Reset state
             st.session_state.waiting_for_image = False
