@@ -100,6 +100,12 @@ if user_message:
 
     if len(user_message) > MAX_CHARS:
         st.warning(getTranslation("input_too_long", language))
+    elif any(keyword in user_message.lower() for keyword in ["system"]):
+        warning_msg = getTranslation("prompt_injection_detected", st.session_state.language)
+        st.warning(warning_msg)
+        st.chat_message("assistant").write(warning_msg)
+        st.session_state.chat_history.append(("assistant", warning_msg))
+        reset_chat()
     else:
         if (st.session_state.waiting_for_image or st.session_state.waiting_for_conversion) and any(k in user_message.lower() for k in getTranslation("exit_keywords", language)):
             st.session_state.waiting_for_image = False
@@ -137,8 +143,8 @@ if user_message:
                 {"role": "user", "parts": [{"text": full_input}]}
             ]
 
-            response = model.generate_content(context,)
-                                            #generation_config={"max_output_tokens": 2000})
+            response = model.generate_content(context,
+                                            generation_config={"max_output_tokens": 2000})
             assistant_reply = response.text
         st.chat_message("assistant").write(assistant_reply)
         st.session_state.chat_history.append(("assistant", assistant_reply))

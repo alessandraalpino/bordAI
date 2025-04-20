@@ -11,29 +11,33 @@
     "en": "Your message is too long. Please shorten it to 500 characters or less.",
     "pt": "Sua mensagem está muito longa. Por favor, reduza para no máximo 500 caracteres."
   },
-    "exit_keywords": {
-      "en": ["exit", "cancel", "nevermind", "leave", "stop", "back", "go back",  "chat mode", "talk", "start over"],
-      "pt": ["sair", "cancelar", "esquece", "voltar", "parar", "quero sair", "quero conversar", "conversar", "mudar de assunto", "modo normal"]
-    },
-    "side_bar_title": {
-      "en": "⚡ Quick Shortcuts",
-      "pt": "⚡ Atalhos Rápidos"
+  "prompt_injection_detected": {
+    "en": "Sorry, your message contains restricted words. Please rephrase your request.",
+    "pt": "Sua mensagem contém palavras restritas. Por favor, reformule o que deseja."
   },
-    "side_bar_description": {
-      "en": "Use these buttons to enhance your experience with bordAI:",
-      "pt": "Use esses botões para agilizar sua experiência com o bordAI:"
+  "exit_keywords": {
+    "en": ["exit", "cancel", "nevermind", "leave", "stop", "back", "go back",  "chat mode", "talk", "start over"],
+    "pt": ["sair", "cancelar", "esquece", "voltar", "parar", "quero sair", "quero conversar", "conversar", "mudar de assunto", "modo normal"]
   },
-    "activate_tool_button": {
-      "en": "🧵 Suggest threads from image",
-      "pt": "🧵 Sugerir linhas pela imagem"
+  "side_bar_title": {
+    "en": "⚡ Quick Shortcuts",
+    "pt": "⚡ Atalhos Rápidos"
   },
-    "activate_tool_success": {
-      "en": "Suggestion mode activated! Now upload an image in the chat.",
-      "pt": "Modo de sugestão ativado! Agora envie uma imagem no chat."
+  "side_bar_description": {
+    "en": "Use these buttons to enhance your experience with bordAI:",
+    "pt": "Use esses botões para agilizar sua experiência com o bordAI:"
+  },
+  "activate_tool_button": {
+    "en": "🧵 Suggest threads from image",
+    "pt": "🧵 Sugerir linhas pela imagem"
+  },
+  "activate_tool_success": {
+    "en": "Suggestion mode activated! Now upload an image in the chat.",
+    "pt": "Modo de sugestão ativado! Agora envie uma imagem no chat."
   },
   "activate_conversion_tool_button": {
-  "en": "🎨 Convert colors",
-  "pt": "🎨 Converter cores"
+    "en": "🎨 Convert colors",
+    "pt": "🎨 Converter cores"
   },
   "activate_conversion_tool_success": {
     "en": "Color conversion mode activated! Just ask which threads to convert.",
