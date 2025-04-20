@@ -1,23 +1,19 @@
 import streamlit as st
-import numpy as np
-import pandas as pd
 from PIL import Image
-import matplotlib.pyplot as plt
-from math import sqrt
-import cv2
-import pytesseract
-import re
 import json
 import os
 from dotenv import load_dotenv
 import google.generativeai as genai
-from functions import (
+from color_functions import (
     remove_background,
     get_colors,
     plot_colors,
     display_color_comparison_with_probability,
     enhanceBrightness,
-    getTranslation,
+    getTranslation
+
+)
+from chat_functions import (
     classify_user_intent,
     extract_conversion_params,
     format_color_conversion_message,
