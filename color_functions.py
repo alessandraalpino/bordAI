@@ -10,6 +10,14 @@ from skimage import color
 import json
 import requests
 import os
+from dotenv import load_dotenv
+
+def get_secret(key):
+    try:
+        return st.secrets[key]
+    except Exception:
+        load_dotenv()
+        return os.getenv(key)
 
 
 def getTranslation(key, lang):
@@ -31,7 +39,7 @@ def load_color_data(url):
 
 
 def convert_colors(codes, input_brand, output_brand, language):
-    color_data = load_color_data(os.getenv("COLOR_JSON_URL"))
+    color_data = load_color_data(get_secret("COLOR_JSON_URL"))
     if isinstance(codes, str):
         codes = [codes]
 

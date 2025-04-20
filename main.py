@@ -5,6 +5,7 @@ import os
 from dotenv import load_dotenv
 import google.generativeai as genai
 from color_functions import (
+    get_secret,
     remove_background,
     get_colors,
     plot_colors,
@@ -12,7 +13,6 @@ from color_functions import (
     enhanceBrightness,
     getTranslation,
     load_color_data
-
 )
 from chat_functions import (
     classify_user_intent,
@@ -24,10 +24,10 @@ from chat_functions import (
 
 
 # Load environment variables
-load_dotenv()
+# load_dotenv()
 
 # Get API key
-api_key = os.getenv("API_KEY")
+api_key = get_secret("API_KEY")
 
 # Configure Generative AI
 genai.configure(api_key=api_key)
@@ -189,7 +189,7 @@ if st.session_state.waiting_for_image:
             plot_colors(colors, language)
 
             # Load reference thread colors
-            color_data = load_color_data(os.getenv("COLOR_JSON_URL"))
+            color_data = load_color_data(get_secret("COLOR_JSON_URL"))
 
             structured_palette = {v[thread_brand]: v for v in color_data.values()}
             display_color_comparison_with_probability(colors, structured_palette, thread_brand, language)
