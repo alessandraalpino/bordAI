@@ -10,7 +10,8 @@ from color_functions import (
     plot_colors,
     display_color_comparison_with_probability,
     enhanceBrightness,
-    getTranslation
+    getTranslation,
+    load_color_data
 
 )
 from chat_functions import (
@@ -188,9 +189,9 @@ if st.session_state.waiting_for_image:
             plot_colors(colors, language)
 
             # Load reference thread colors
-            with open('anchor_colors_w_prob.json', 'r') as f:
-                anchor_colors = json.load(f)
-            structured_palette = {v[thread_brand]: v for v in anchor_colors.values()}
+            color_data = load_color_data(os.getenv("COLOR_JSON_URL"))
+
+            structured_palette = {v[thread_brand]: v for v in color_data.values()}
             display_color_comparison_with_probability(colors, structured_palette, thread_brand, language)
 
             # Reset state

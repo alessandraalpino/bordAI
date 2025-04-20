@@ -8,6 +8,9 @@ from PIL import Image, ImageEnhance
 import matplotlib.pyplot as plt
 from skimage import color
 import json
+import requests
+import os
+
 
 def getTranslation(key, lang):
     return translations.get(key, {}).get(lang, f"[{key}]")
@@ -15,10 +18,20 @@ def getTranslation(key, lang):
 with open("translations.json", "r", encoding="utf-8") as f:
     translations = json.load(f)
 
-with open("anchor_colors_w_prob.json", "r") as f:
-    color_data = json.load(f)
+
+@st.cache_data(show_spinner="🔄 Loading thread color data...")
+def load_color_data(url):
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        return response.json()
+    except Exception as e:
+        st.error(f"❌ Failed to load color data: {e}")
+        return {}
+
 
 def convert_colors(codes, input_brand, output_brand, language):
+    color_data = load_color_data(os.getenv("COLOR_JSON_URL"))
     if isinstance(codes, str):
         codes = [codes]
 
