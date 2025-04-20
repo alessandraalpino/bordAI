@@ -6,6 +6,7 @@ numpy
 scikit-learn
 scipy
 rembg
+onnxruntime
 matplotlib
 scikit-image
 requests
