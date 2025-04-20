@@ -10,12 +10,12 @@ from skimage import color
 import json
 import requests
 import os
-from dotenv import load_dotenv
 
 def get_secret(key):
     try:
         return st.secrets[key]
     except Exception:
+        from dotenv import load_dotenv
         load_dotenv()
         return os.getenv(key)
 
