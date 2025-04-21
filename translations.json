@@ -36,8 +36,8 @@
     "pt": "Modo de sugestão ativado! Agora envie uma imagem no chat."
   },
   "activate_conversion_tool_button": {
-    "en": "🎨 Convert colors",
-    "pt": "🎨 Converter cores"
+    "en": "🎨 Convert Anchor ↔ DMC",
+    "pt": "🎨 “Converter Anchor ↔ DMC”"
   },
   "activate_conversion_tool_success": {
     "en": "Color conversion mode activated! Just ask which threads to convert.",
@@ -84,8 +84,8 @@
     "pt": "Fale com o assistente de bordado..."
   },
   "initial_message": {
-    "en": "Hi there! I'm **bordAI 🤖**, your personal embroidery assistant.\n\n**I can help you choose thread colors from the Anchor or DMC palettes based on an image — or assist you with embroidery-related questions in general.**\n\nJust send me an image, and I’ll detect the main colors and suggest the closest matching threads from those brands.\n\n📌 You can activate the color tool at any time by **clicking the “Suggest threads from image”** button on the left — or **asking here in the chat**.\n\n🎯 **How can I help you today?**",
-    "pt": "Olá! Eu sou o **bordAI 🤖**, seu assistente de bordado.\n\n**Posso te ajudar a escolher cores de linha das paletas Anchor ou DMC com base em uma imagem — ou responder dúvidas sobre bordado em geral.**\n\nÉ só me enviar uma imagem que eu identifico as cores predominantes e sugiro as linhas mais próximas dessas marcas.\n\n📌 Você pode ativar a ferramenta de cores a qualquer momento **clicando no botão “Sugerir linhas pela imagem”** na lateral esquerda da tela — ou **pedindo aqui no chat**.\n\n🎯 **Como posso te ajudar hoje?**"
+    "pt": "Olá! Eu sou o **bordAI** 🤖, seu assistente de bordado.\n\nPosso te ajudar com:\n\n- 🖼️ **Sugestão de linhas com base em uma imagem**  \n  Envie uma imagem, e eu identifico as cores predominantes, sugerindo as linhas das marcas **Anchor** ou **DMC** mais próximas dessas cores.\n\n- 🔄 **Conversão entre marcas**  \n  Informe os códigos das linhas que você deseja converter, e eu faço rapidamente a conversão entre as marcas **Anchor** e **DMC**.\n\n- 💬 **Dúvidas gerais**  \n  Tire dúvidas sobre técnicas, materiais e dicas relacionadas ao bordado.\n\n📌 Você pode acessar essas ferramentas pelos botões **“Sugerir linhas pela imagem”** ou **“Converter Anchor ↔ DMC”** na lateral esquerda da tela, ou solicitar diretamente aqui pelo chat.\n\n🎯 **Como posso te ajudar hoje?**",
+    "en": "Hi! I'm **bordAI** 🤖, your embroidery assistant.\n\nI can help you with:\n\n- 🖼️ **Suggesting threads based on an image**  \n  Send me an image, and I’ll identify the dominant colors and suggest the closest thread matches from the **Anchor** or **DMC** palettes.\n\n- 🔄 **Brand conversion**  \n  Provide the thread codes you'd like to convert, and I’ll quickly match them between **Anchor** and **DMC** brands.\n\n- 💬 **General questions**  \n  Ask me anything about techniques, materials, or embroidery tips.\n\n📌 You can access these tools via the **“Suggest threads by image”** or **“Convert Anchor ↔ DMC”** buttons on the left side of the screen, or simply ask here in the chat.\n\n🎯 **How can I help you today?**"
   },
   "image_request": {
     "en": "Sure! Please upload the image you'd like to use.",
