@@ -11,7 +11,7 @@ Being passionate about manual arts and technology, I came up with the idea of cr
 ---
 
 > 📖 Read the full story on Medium:
-> [How I Used AI to Simplify My Embroidery Projects](https://medium.com/@yourusername/your-article-slug)
+> [How I Used AI to Simplify My Embroidery Projects](https://medium.com/@yourusername/your-article-slug) TROCAR LINK
 
 
 ---
@@ -44,7 +44,7 @@ Being passionate about manual arts and technology, I came up with the idea of cr
 
 - **Frontend:** Streamlit
 - **LLM:** Google Gemini Flash 2.0
-- **Image Processing and calculations:** rembg, Pillow, scikit‑image, KMeans (scikit‑learn), scipy
+- **Image Processing & Analysis:** rembg, Pillow, scikit‑image, KMeans (scikit‑learn), scipy
 - **Data Hosting:** Firebase Hosting for private color data
 - **Visualization:** Matplotlib
 - **Translations:** Managed via `translations.json`
