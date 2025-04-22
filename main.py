@@ -123,6 +123,7 @@ if user_message:
             response = model.generate_content(context,
                                             generation_config={"max_output_tokens": 2000})
             assistant_reply = response.text
+
         st.chat_message("assistant").write(assistant_reply)
         st.session_state.chat_history.append(("assistant", assistant_reply))
 
@@ -131,9 +132,11 @@ if st.session_state.waiting_for_image:
 
     if uploaded:
         original_image = Image.open(uploaded)
+
         st.image(original_image, caption=getTranslation("original_image_caption", language), use_container_width=True)
         st.markdown(f'### {getTranslation("adjust_image_title", language)}')
         st.markdown(getTranslation("image_tool_intro", language))
+
         remove_bg = st.checkbox(getTranslation("remove_bg", language))
         brightness = st.slider(getTranslation("brightness", language), 0, 100, 0, step=1)
         num_colors = st.number_input(getTranslation("num_colors", language),
@@ -141,6 +144,7 @@ if st.session_state.waiting_for_image:
         thread_brand = st.selectbox(getTranslation("thread_brand", language), ["Anchor", "DMC"], index= 0)
 
         processed_image = original_image
+
         if remove_bg:
             processed_image = remove_background(processed_image)
 
@@ -155,6 +159,7 @@ if st.session_state.waiting_for_image:
 
         if st.button(getTranslation("analyze_button", language)):
             st.markdown(f'### {getTranslation("palette_title", language)}')
+
             colors = get_colors(processed_image, language, num_colors)
             plot_colors(colors, language)
 
@@ -163,6 +168,7 @@ if st.session_state.waiting_for_image:
             display_color_comparison(colors, structured_palette, thread_brand, language)
 
             st.session_state.waiting_for_image = False
+
             final_response = getTranslation("final_response", language)
             st.chat_message("assistant").write(final_response)
             st.session_state.chat_history.append(("assistant", final_response))

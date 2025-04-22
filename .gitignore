@@ -1,4 +1,4 @@
 .env
-firebase_hosting/
 __pycache__/
 .DS_Store
+firebase_hosting/
