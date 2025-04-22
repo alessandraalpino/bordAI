@@ -5,13 +5,13 @@ Being passionate about manual arts and technology, I came up with the idea of cr
 **BordAI** 🤖 is an intelligent app that helps you bring your embroidery projects to life — whether you need to pick thread colors from an image, convert between Anchor and DMC palettes, or get advice on stitches, techniques, and materials.
 
 
-[👉 Try it out!](https://bordai.streamlit.app)
+## [👉 Try it out!](https://bordai.streamlit.app)
 
 
 ---
 
 > 📖 Read the full story on Medium:
-> [How I Used AI to Simplify My Embroidery Projects](https://medium.com/@yourusername/your-article-slug) TROCAR LINK
+> [How I Used AI to Simplify My Embroidery Projects](https://medium.com/@alessandraalpino/how-i-used-ai-to-simplify-my-embroidery-projects-c01cdc077bfa) 
 
 
 ---
@@ -51,4 +51,4 @@ Being passionate about manual arts and technology, I came up with the idea of cr
 
 ---
 
-Created by Alessandra Alpino – data scientist & embroidery enthusiast
+Built with ❤️ by Ale
