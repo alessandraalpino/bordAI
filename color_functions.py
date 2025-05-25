@@ -10,6 +10,8 @@ from skimage import color
 import json
 import requests
 import os
+from dotenv import load_dotenv
+
 
 with open("translations.json", "r", encoding="utf-8") as f:
     translations = json.load(f)
@@ -23,7 +25,6 @@ def get_secret(key):
     try:
         return st.secrets[key]
     except Exception:
-        from dotenv import load_dotenv
         load_dotenv()
         return os.getenv(key)
 
