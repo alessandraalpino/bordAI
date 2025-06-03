@@ -69,17 +69,14 @@ if not st.session_state.chat_history:
 for role, message in st.session_state.chat_history:
     st.chat_message(role).write(message)
 
-user_message = st.chat_input(getTranslation("chat_input_placeholder", language))
-MAX_CHARS = 500
+user_message = st.chat_input(getTranslation("chat_input_placeholder", language), max_chars=500)
 
 if user_message:
 
     st.chat_message("user").write(user_message)
     st.session_state.chat_history.append(("user", user_message))
 
-    if len(user_message) > MAX_CHARS:
-        st.warning(getTranslation("input_too_long", language))
-    elif any(keyword in user_message.lower() for keyword in ["system"]):
+    if any(keyword in user_message.lower() for keyword in ["system"]):
         warning_msg = getTranslation("prompt_injection_detected", st.session_state.language)
         st.warning(warning_msg)
         st.chat_message("assistant").write(warning_msg)
